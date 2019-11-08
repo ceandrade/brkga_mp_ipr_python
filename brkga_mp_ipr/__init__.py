@@ -21,4 +21,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
-__all__ = ["types", "types_io"]
+__all__ = [
+    "enums",
+    "exceptions",
+    "types",
+    "types_io"
+]

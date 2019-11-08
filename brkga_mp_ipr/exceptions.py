@@ -23,6 +23,6 @@ POSSIBILITY OF SUCH DAMAGE.
 
 class LoadError(RuntimeError):
     """
-    Specifies an error while reading a config file.
+    Specifies an error while reading a configuration file.
     """
     pass

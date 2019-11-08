@@ -6,7 +6,7 @@ types.py: Definitions of internal data structures and external API.
 This code is released under LICENSE.md.
 
 Created on:  Nov 05, 2019 by ceandrade
-Last update: Nov 07, 2019 by ceandrade
+Last update: Nov 08, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -21,151 +21,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
-from enum import Enum, Flag, unique
+from brkga_mp_ipr.enums import BiasFunction, PathRelinkingType, \
+    PathRelinkingSelection
 
-###############################################################################
-# Enumerations
-###############################################################################
-
-class ParsingEnum(Enum):
-    """
-    Implements a base Enum class that returns an Enum object from a string
-    (case insensitive).
-    """
-
-    @classmethod
-    def _missing_(cls, name):
-        """
-        When the constructor cannot find the attribute, it calls this
-        function. Then, we check if the string of the given name/object is in
-        the attribute list of the Enum. If so, we return the attribute.
-        """
-        for member in cls:
-            if member.name.upper() == str(name).upper():
-                return member
-
-    def __str__(self):
-        """
-        Just return the name instead of <name, value>.
-        """
-        return self.name
-
-###############################################################################
-
-@unique
-class Sense(ParsingEnum):
-    """
-    Tells the algorithm either to `MINIMIZE` or `MAXIMIZE` the
-    objective function.
-    """
-    MINIMIZE = 0
-    MAXIMIZE = 1
-
-###############################################################################
-
-@unique
-class BiasFunction(ParsingEnum):
-    """
-    Specifies a bias function when choosing parents to mating. This function
-    substitutes the ``\\rho`` (rho) parameter from the original BRKGA.
-    For a given rank ``r``, we have the following functions:
-
-    - `CONSTANT`: 1 / number of parents for mating (all individuals have the
-      same probability)
-
-    - `CUBIC`: ``r^{-3}``
-
-    - `EXPONENTIAL`: ``ϵ^{-r}``
-
-    - `LINEAR`: ``1 / r``
-
-    - `LOGINVERSE`: ``1 / \\log(r + 1)``
-
-    - `QUADRATIC`: ``r^{-2}``
-    """
-    CONSTANT = 0
-    CUBIC = 1
-    EXPONENTIAL = 2
-    LINEAR = 3
-    LOGINVERSE = 4
-    QUADRATIC = 5
-    CUSTOM = 6
-
-###############################################################################
-
-@unique
-class PathRelinkingType(ParsingEnum):
-    """
-    Specifies type of path relinking:
-
-    - `DIRECT`: changes each key for the correspondent in the other chromosome.
-
-    - `PERMUTATION`: switches the order of a key for that in the other
-      chromosome.
-    """
-    DIRECT = 0
-    PERMUTATION = 1
-
-###############################################################################
-
-@unique
-class PathRelinkingSelection(ParsingEnum):
-    """
-    Specifies which individuals used to build the path:
-
-    - `BESTSOLUTION`: selects, in the order, the best solution of each
-      population.
-
-    - `RANDOMELITE`: chooses uniformly random solutions from the elite sets.
-    """
-    BESTSOLUTION = 0
-    RANDOMELITE = 1
-
-###############################################################################
-
-@unique
-class PathRelinkingResult(Flag):
-    """
-    Specifies the result type/status of path relink procedure:
-
-    - `TOO_HOMOGENEOUS`: the chromosomes among the populations are too
-      homogeneous and the path relink will not generate improveded solutions.
-
-    - `NO_IMPROVEMENT`: path relink was done but no improveded solution was
-      found.
-
-    - `ELITE_IMPROVEMENT`: an improved solution among the elite set was found,
-      but the best solution was not improved.
-
-    - `BEST_IMPROVEMENT`: the best solution was improved.
-    """
-    TOO_HOMOGENEOUS = 0
-    NO_IMPROVEMENT = 1
-    ELITE_IMPROVEMENT = 3
-    BEST_IMPROVEMENT = 7
-
-################################################################################
-
-@unique
-class ShakingType(ParsingEnum):
-    """
-    Specifies the type of shaking to be performed.
-
-    - `CHANGE`: applies the following perturbations:
-        1) Inverts the value of a random chosen, i.e., from `value` to
-           `1 - value`;
-        2) Assigns a random value to a random key.
-
-    - `SWAP`: applies two swap perturbations:
-        1) Swaps the values of a randomly chosen key `i` and its
-           neighbor `i + 1`;
-        2) Swaps values of two randomly chosen keys.
-    """
-    CHANGE = 0
-    SWAP = 1
-
-###############################################################################
-# Data structures
 ###############################################################################
 
 class BrkgaParams:
@@ -173,7 +31,7 @@ class BrkgaParams:
     Represents the BRKGA and IPR hyper-parameters.
 
     Attributes:
-        **BRKGA Hyper-parameters**
+        ** BRKGA Hyper-parameters **
 
         population_size (int): Number of elements in the population [> 0].
 
@@ -259,3 +117,32 @@ class ExternalControlParams:
         """
         Interval at which the populations are reset (0 means no reset) [> 0].
         """
+
+###############################################################################
+
+class BaseChromosome(list):
+    """
+    This class represents a chromosome using a vector in the unitary
+    hypercube, i.e., :math:`v \\in [0,1]^n` where :math:`n` is the size of the
+    array (dimensions of the hypercube).
+
+    Note that this base class is a simple list of float numbers and can be
+    used in the algorithm directly. However, in some cases, the user wants
+    additional capabilities in the Chromosome class, such as extra data and
+    so. For instance, in the example below, the chromosome also keeps the
+    makespan and total completion time for a scheduling problem:
+
+    .. code-block:: python
+
+        class SchedulingChromosome(BaseChromosome):
+            def __init__(self, value):
+                super().__init__(value)
+                self.makespan = 0.0
+                self.total_completion_time = 0.0
+
+    Note that when subclassing BaseChromosome, we must define the method
+    ``__init__(self, value)`` and call the parent (``BaseChromosome``)
+    constructor. We need at least one argument to be passed to
+    ``BaseChromosome`` constructor.
+    """
+    pass
