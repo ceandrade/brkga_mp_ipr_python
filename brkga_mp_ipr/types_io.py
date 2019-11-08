@@ -26,13 +26,25 @@ from itertools import chain
 from brkga_mp_ipr.types import *
 from brkga_mp_ipr.exceptions import *
 
+###############################################################################
+
 def load_configuration(configuration_file: str) -> \
         (BrkgaParams, ExternalControlParams):
     """
     Loads the parameters from `configuration_file` returning them as a tuple.
 
     Args:
-        configuration_file: plain text file containing the configuration.
+        configuration_file (str): plain text file containing the configuration.
+
+    Returns:
+        A tuple containing a `BrkgaParams` and a `ExternalControlParams` object.
+
+    Raises:
+        IsADirectoryError: If `configuration_file` is a folder.
+
+        FileNotFoundError: If `configuration_file` does not exist.
+
+        LoadError: In cases of missing data or bad-formatted data.
     """
 
     brkga_params = BrkgaParams()
@@ -91,3 +103,34 @@ def load_configuration(configuration_file: str) -> \
         raise LoadError(f"Missing parameters: {missing_params}")
 
     return (brkga_params, control_params)
+
+###############################################################################
+
+def write_configuration(filename: str, brkga_params: BrkgaParams,
+                        external_params: ExternalControlParams) -> None:
+    """
+    Writes `brkga_params` and `external_params` into `filename`.
+
+    Args:
+        filename (str): A file where the configuration will be written.
+
+        brkga_params (BrkgaParams): The BRKGA-MP-IPR parameters.
+
+        external_params (ExternalControlParams): The control parameters.
+
+    Raises:
+        IsADirectoryError: If `filename` is a folder.
+
+        PermissionError: If we cannot write into the file.
+    """
+
+    output_string = ""
+
+    for name, value in vars(brkga_params).items():
+        output_string += f"{name} {value}\n"
+
+    for name, value in vars(external_params).items():
+        output_string += f"{name} {value}\n"
+
+    with open(filename, "w") as hd:
+        hd.write(output_string)

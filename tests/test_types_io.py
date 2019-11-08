@@ -21,7 +21,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
+import tempfile
 import unittest
+
 from brkga_mp_ipr.types import *
 from brkga_mp_ipr.types_io import *
 from tests.paths_constants import *
@@ -111,6 +113,56 @@ class Test(unittest.TestCase):
         self.assertEqual(control_params.exchange_interval, 200)
         self.assertEqual(control_params.num_exchange_indivuduals, 2)
         self.assertEqual(control_params.reset_interval, 600)
+
+    ###########################################################################
+
+    def test_write_configuration(self):
+        """
+        Test write functions.
+        """
+
+        #########################
+        # From config file
+        #########################
+
+        brkga_params, control_params = \
+            load_configuration(os.path.join(CONFIG_DIR, "regular.conf"))
+
+        self.assertRaises(PermissionError, write_configuration,
+                          "/invalid", brkga_params, control_params)
+
+        self.assertRaises(IsADirectoryError, write_configuration,
+                          ".", brkga_params, control_params)
+
+        tmp = tempfile.NamedTemporaryFile(mode="r")
+        write_configuration(tmp.name, brkga_params, control_params)
+
+        tmp.seek(0)
+        result = tmp.read().lower()
+        tmp.close()
+
+        standard = """population_size 500
+elite_percentage 0.3
+mutants_percentage 0.15
+num_elite_parents 2
+total_parents 3
+bias_type loginverse
+num_independent_populations 3
+pr_number_pairs 0
+pr_minimum_distance 0.15
+pr_type permutation
+pr_selection randomelite
+alpha_block_size 1.0
+pr_percentage 1.0
+exchange_interval 200
+num_exchange_indivuduals 2
+reset_interval 600
+"""
+        self.assertEqual(result, standard)
+
+        #########################
+        # TODO: From direct building
+        #########################
 
 ###############################################################################
 

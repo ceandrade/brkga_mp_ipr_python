@@ -40,6 +40,23 @@ class Test(unittest.TestCase):
 
     ###########################################################################
 
+    def test_ParsingEnum(self):
+        """
+        Tests ParsingEnum methods.
+        """
+
+        MyEnum = ParsingEnum('Animal', 'ANT BEE CAT DOG')
+
+        self.assertEqual(MyEnum("ANT"), MyEnum.ANT)
+        self.assertEqual(MyEnum("ant"), MyEnum.ANT)
+        self.assertEqual(str(MyEnum.ANT), "ANT")
+
+        self.assertEqual(MyEnum("BEE"), MyEnum.BEE)
+        self.assertEqual(MyEnum("bEe"), MyEnum.BEE)
+        self.assertEqual(str(MyEnum.BEE), "BEE")
+
+    ###########################################################################
+
     def test_Sense(self):
         """
         Tests Sense constructor.

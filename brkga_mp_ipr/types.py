@@ -32,11 +32,23 @@ class ParsingEnum(Enum):
     Implements a base Enum class that returns an Enum object from a string
     (case insensitive).
     """
+
     @classmethod
     def _missing_(cls, name):
+        """
+        When the constructor cannot find the attribute, it calls this
+        function. Then, we check if the string of the given name/object is in
+        the attribute list of the Enum. If so, we return the attribute.
+        """
         for member in cls:
             if member.name.upper() == str(name).upper():
                 return member
+
+    def __str__(self):
+        """
+        Just return the name instead of <name, value>.
+        """
+        return self.name
 
 ###############################################################################
 
