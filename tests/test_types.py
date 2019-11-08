@@ -1,5 +1,5 @@
 """
-test_types.py: tests for types.
+test_types.py: Tests for types.
 
 (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.
 

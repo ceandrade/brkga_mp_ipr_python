@@ -1,5 +1,5 @@
 """
-test_types_io.py: tests for I/O functions.
+test_types_io.py: Tests for I/O functions.
 
 (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.
 

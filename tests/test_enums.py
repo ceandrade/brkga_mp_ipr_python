@@ -1,5 +1,5 @@
 """
-test_enums.py: tests for enumerations.
+test_enums.py: Tests for enumerations.
 
 (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.
 
