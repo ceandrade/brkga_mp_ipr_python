@@ -34,5 +34,5 @@ import pkg_resources
 ###############################################################################
 
 RESOURCE_DIR = pkg_resources.resource_filename(__name__, "resources")
-INSTANCE_DIR = os.path.join(RESOURCE_DIR, "instances")
-SOLUTION_DIR = os.path.join(RESOURCE_DIR, "solutions")
+CONFIG_DIR = os.path.join(RESOURCE_DIR, "configuration_files")
+# SOLUTION_DIR = os.path.join(RESOURCE_DIR, "solutions")

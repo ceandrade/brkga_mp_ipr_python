@@ -6,7 +6,7 @@ types.py: Definitions of internal data structures and external API.
 This code is released under LICENSE.md.
 
 Created on:  Nov 05, 2019 by ceandrade
-Last update: Nov 05, 2019 by ceandrade
+Last update: Nov 07, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -27,8 +27,21 @@ from enum import Enum, Flag, unique
 # Enumerations
 ###############################################################################
 
+class ParsingEnum(Enum):
+    """
+    Implements a base Enum class that returns an Enum object from a string
+    (case insensitive).
+    """
+    @classmethod
+    def _missing_(cls, name):
+        for member in cls:
+            if member.name.upper() == str(name).upper():
+                return member
+
+###############################################################################
+
 @unique
-class Sense(Enum):
+class Sense(ParsingEnum):
     """
     Tells the algorithm either to `MINIMIZE` or `MAXIMIZE` the
     objective function.
@@ -39,14 +52,14 @@ class Sense(Enum):
 ###############################################################################
 
 @unique
-class BiasFunction(Enum):
+class BiasFunction(ParsingEnum):
     """
     Specifies a bias function when choosing parents to mating. This function
     substitutes the ``\\rho`` (rho) parameter from the original BRKGA.
     For a given rank ``r``, we have the following functions:
 
     - `CONSTANT`: 1 / number of parents for mating (all individuals have the
-                    same probability)
+      same probability)
 
     - `CUBIC`: ``r^{-3}``
 
@@ -69,7 +82,7 @@ class BiasFunction(Enum):
 ###############################################################################
 
 @unique
-class PathRelinkingType(Enum):
+class PathRelinkingType(ParsingEnum):
     """
     Specifies type of path relinking:
 
@@ -84,7 +97,7 @@ class PathRelinkingType(Enum):
 ###############################################################################
 
 @unique
-class PathRelinkingSelection(Enum):
+class PathRelinkingSelection(ParsingEnum):
     """
     Specifies which individuals used to build the path:
 
@@ -104,14 +117,13 @@ class PathRelinkingResult(Flag):
     Specifies the result type/status of path relink procedure:
 
     - `TOO_HOMOGENEOUS`: the chromosomes among the populations are too
-                         homogeneous and the path relink will not generate
-                         improveded solutions.
+      homogeneous and the path relink will not generate improveded solutions.
 
     - `NO_IMPROVEMENT`: path relink was done but no improveded solution was
-                        found.
+      found.
 
     - `ELITE_IMPROVEMENT`: an improved solution among the elite set was found,
-                           but the best solution was not improved.
+      but the best solution was not improved.
 
     - `BEST_IMPROVEMENT`: the best solution was improved.
     """
@@ -123,18 +135,18 @@ class PathRelinkingResult(Flag):
 ################################################################################
 
 @unique
-class ShakingType(Enum):
+class ShakingType(ParsingEnum):
     """
     Specifies the type of shaking to be performed.
 
     - `CHANGE`: applies the following perturbations:
         1) Inverts the value of a random chosen, i.e., from `value` to
-        `1 - value`;
+           `1 - value`;
         2) Assigns a random value to a random key.
 
     - `SWAP`: applies two swap perturbations:
         1) Swaps the values of a randomly chosen key `i` and its
-        neighbor `i + 1`;
+           neighbor `i + 1`;
         2) Swaps values of two randomly chosen keys.
     """
     CHANGE = 0
@@ -147,59 +159,63 @@ class ShakingType(Enum):
 class BrkgaParams:
     """
     Represents the BRKGA and IPR hyper-parameters.
+
+    Attributes:
+        **BRKGA Hyper-parameters**
+
+        population_size (int): Number of elements in the population [> 0].
+
+        elite_percentage (float): Percentage of individuals to become the
+            elite set (0, 1].
+
+        mutants_percentage (float): Percentage of mutants to be inserted in
+            the population.
+
+        num_elite_parents (int): Number of elite parents for mating [> 0].
+
+        total_parents (int): Number of total parents for mating [> 0].
+
+        bias_type (BiasFunction): Type of bias that will be used.
+
+        num_independent_populations (int): Number of independent parallel
+            populations.
+
+        **Path Relinking parameters**
+
+        pr_number_pairs (int): Number of pairs of chromosomes to be tested
+            to path relinking.
+
+        pr_minimum_distance (float): Mininum distance between chromosomes
+            selected to path-relinking.
+
+        pr_type (PathRelinkingType): Path relinking type.
+        pr_selection (PathRelinkingSelection): Individual selection to
+            path-relinking.
+
+        alpha_block_size (float): Defines the block size based on the size of
+            the population.
+
+        pr_percentage (float): Percentage / path size to be computed.
+            Value in (0, 1].
     """
 
     def __init__(self):
         """
-        Initialize a BrkgaParams object.
+        Initializes a BrkgaParams object.
         """
-
-        ########################################
-        # BRKGA Hyper-parameters
-        ########################################
-
         self.population_size = 0
-        """ Number of elements in the population [> 0]. """
-
         self.elite_percentage = 0.0
-        """Percentage of individuals to become the elite set (0, 1]."""
-
         self.mutants_percentage = 0.0
-        """Percentage of mutants to be inserted in the population."""
-
         self.num_elite_parents = 0
-        """Number of elite parents for mating [> 0]."""
-
         self.total_parents = 0
-        """Number of total parents for mating [> 0]."""
-
         self.bias_type = BiasFunction.CONSTANT
-        """Type of bias that will be used."""
-
         self.num_independent_populations = 0
-        """Number of independent parallel populations."""
-
-        ########################################
-        # Path Relinking parameters
-        ########################################
-
         self.pr_number_pairs = 0
-        """Number of pairs of chromosomes to be tested to path relinking."""
-
         self.pr_minimum_distance = 0.0
-        """Mininum distance between chromosomes selected to path-relinking."""
-
         self.pr_type = PathRelinkingType.DIRECT
-        """Path relinking type."""
-
         self.pr_selection = PathRelinkingSelection.BESTSOLUTION
-        """Individual selection to path-relinking."""
-
         self.alpha_block_size = 0.0
-        """Defines the block size based on the size of the population."""
-
         self.pr_percentage = 0.0
-        """Percentage / path size to be computed. Value in (0, 1]."""
 
 ###############################################################################
 
@@ -213,7 +229,7 @@ class ExternalControlParams:
                  num_exchange_indivuduals: int = 0,
                  reset_interval: int = 0):
         """
-        Initialize a ExternalControlParams object.
+        Initializes a ExternalControlParams object.
         """
 
         self.exchange_interval = exchange_interval

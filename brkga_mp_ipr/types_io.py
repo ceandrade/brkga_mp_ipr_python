@@ -6,7 +6,7 @@ types_io.py: I/O functions for parameters (types).
 This code is released under LICENSE.md.
 
 Created on:  Nov 06, 2019 by ceandrade
-Last update: Nov 06, 2019 by ceandrade
+Last update: Nov 07, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -20,3 +20,74 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
+
+from itertools import chain
+
+from brkga_mp_ipr.types import *
+from brkga_mp_ipr.exceptions import *
+
+def load_configuration(configuration_file: str) -> \
+        (BrkgaParams, ExternalControlParams):
+    """
+    Loads the parameters from `configuration_file` returning them as a tuple.
+
+    Args:
+        configuration_file: plain text file containing the configuration.
+    """
+
+    brkga_params = BrkgaParams()
+    control_params = ExternalControlParams()
+
+    param_names_types = {
+        name: type(value)
+        for name, value in chain(vars(brkga_params).items(),
+                                 vars(control_params).items())
+    }
+
+    param_given = {name: False for name in param_names_types.keys()}
+
+    with open(configuration_file) as hd:
+        lines = hd.readlines()
+
+    if not lines:
+        raise LoadError(f"Cannot read {configuration_file}")
+
+    for (line_number, line) in enumerate(lines):
+        line = line.strip()
+        if len(line) == 0 or line[0] == '#':
+            continue
+
+        param_name = None
+        value = None
+
+        try:
+            param_name, value = [x.strip().lower() for x in line.split()]
+        except ValueError:
+            raise LoadError(f"Line {line_number}: "
+                            f"missing parameter or value")
+
+        if param_name in vars(brkga_params):
+            data = brkga_params
+        elif param_name in vars(control_params):
+            data = control_params
+        else:
+            raise LoadError(f"Line {line_number}: "
+                            f"parameter '{param_name}' unknown")
+        try:
+            setattr(data, param_name, param_names_types[param_name](value))
+            param_given[param_name] = True
+        except ValueError:
+            raise LoadError(f"Line {line_number}: "
+                            f"invalid value for '{param_name}': {value}")
+    # end for
+
+    missing_params = []
+    for name, value in param_given.items():
+        if not value:
+            missing_params.append(name)
+
+    if missing_params:
+        missing_params = ", ".join(missing_params)
+        raise LoadError(f"Missing parameters: {missing_params}")
+
+    return (brkga_params, control_params)
