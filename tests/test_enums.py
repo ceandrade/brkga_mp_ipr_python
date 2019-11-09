@@ -6,7 +6,7 @@ test_enums.py: Tests for enumerations.
 This code is released under LICENSE.md.
 
 Created on:  Nov 06, 2019 by ceandrade
-Last update: Nov 07, 2019 by ceandrade
+Last update: Nov 09, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,7 +22,7 @@ POSSIBILITY OF SUCH DAMAGE.
 """
 
 import unittest
-from brkga_mp_ipr.types import *
+from brkga_mp_ipr.enums import *
 
 class Test(unittest.TestCase):
     """
@@ -77,28 +77,28 @@ class Test(unittest.TestCase):
 
     ###########################################################################
 
-    def test_BiasFunction(self):
+    def test_BiasFunctionType(self):
         """
         Tests BiasFunction constructor.
         """
 
-        self.assertEqual(BiasFunction("CONSTANT"), BiasFunction.CONSTANT)
-        self.assertEqual(BiasFunction("constant"), BiasFunction.CONSTANT)
-        self.assertEqual(BiasFunction("CUBIC"), BiasFunction.CUBIC)
-        self.assertEqual(BiasFunction("cubic"), BiasFunction.CUBIC)
-        self.assertEqual(BiasFunction("EXPONENTIAL"), BiasFunction.EXPONENTIAL)
-        self.assertEqual(BiasFunction("exponential"), BiasFunction.EXPONENTIAL)
-        self.assertEqual(BiasFunction("LINEAR"), BiasFunction.LINEAR)
-        self.assertEqual(BiasFunction("linear"), BiasFunction.LINEAR)
-        self.assertEqual(BiasFunction("LOGINVERSE"), BiasFunction.LOGINVERSE)
-        self.assertEqual(BiasFunction("loginverse"), BiasFunction.LOGINVERSE)
-        self.assertEqual(BiasFunction("QUADRATIC"), BiasFunction.QUADRATIC)
-        self.assertEqual(BiasFunction("quadratic"), BiasFunction.QUADRATIC)
-        self.assertEqual(BiasFunction("CUSTOM"), BiasFunction.CUSTOM)
-        self.assertEqual(BiasFunction("custom"), BiasFunction.CUSTOM)
+        self.assertEqual(BiasFunctionType("CONSTANT"), BiasFunctionType.CONSTANT)
+        self.assertEqual(BiasFunctionType("constant"), BiasFunctionType.CONSTANT)
+        self.assertEqual(BiasFunctionType("CUBIC"), BiasFunctionType.CUBIC)
+        self.assertEqual(BiasFunctionType("cubic"), BiasFunctionType.CUBIC)
+        self.assertEqual(BiasFunctionType("EXPONENTIAL"), BiasFunctionType.EXPONENTIAL)
+        self.assertEqual(BiasFunctionType("exponential"), BiasFunctionType.EXPONENTIAL)
+        self.assertEqual(BiasFunctionType("LINEAR"), BiasFunctionType.LINEAR)
+        self.assertEqual(BiasFunctionType("linear"), BiasFunctionType.LINEAR)
+        self.assertEqual(BiasFunctionType("LOGINVERSE"), BiasFunctionType.LOGINVERSE)
+        self.assertEqual(BiasFunctionType("loginverse"), BiasFunctionType.LOGINVERSE)
+        self.assertEqual(BiasFunctionType("QUADRATIC"), BiasFunctionType.QUADRATIC)
+        self.assertEqual(BiasFunctionType("quadratic"), BiasFunctionType.QUADRATIC)
+        self.assertEqual(BiasFunctionType("CUSTOM"), BiasFunctionType.CUSTOM)
+        self.assertEqual(BiasFunctionType("custom"), BiasFunctionType.CUSTOM)
 
-        self.assertRaises(ValueError, BiasFunction, "invalid")
-        self.assertRaises(ValueError, BiasFunction, -1)
+        self.assertRaises(ValueError, BiasFunctionType, "invalid")
+        self.assertRaises(ValueError, BiasFunctionType, -1)
 
     ###########################################################################
 

@@ -6,7 +6,7 @@ test_types.py: Tests for types.
 This code is released under LICENSE.md.
 
 Created on:  Nov 06, 2019 by ceandrade
-Last update: Nov 07, 2019 by ceandrade
+Last update: Nov 09, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -52,7 +52,7 @@ class Test(unittest.TestCase):
         self.assertEqual(brkga_params.mutants_percentage, 0.0)
         self.assertEqual(brkga_params.num_elite_parents, 0)
         self.assertEqual(brkga_params.total_parents, 0)
-        self.assertEqual(brkga_params.bias_type, BiasFunction.CONSTANT)
+        self.assertEqual(brkga_params.bias_type, BiasFunctionType.CONSTANT)
         self.assertEqual(brkga_params.num_independent_populations, 0)
         self.assertEqual(brkga_params.pr_number_pairs, 0)
         self.assertEqual(brkga_params.pr_minimum_distance, 0.0)
@@ -87,7 +87,6 @@ class Test(unittest.TestCase):
         self.assertEqual(extra_params.num_exchange_indivuduals, 10)
         self.assertEqual(extra_params.reset_interval, 20)
 
-
     ###########################################################################
 
     def test_BaseChromosome(self):
@@ -108,6 +107,27 @@ class Test(unittest.TestCase):
         self.assertEqual(tmp, [1, 2, 3])
         self.assertEqual(tmp.makespan, 0.0)
         self.assertEqual(tmp.total_completion_time, 0.0)
+
+    ###########################################################################
+
+    def test_Population(self):
+        """
+        Tests BaseChromosome constructor.
+        """
+
+        pop1 = Population()
+        self.assertEqual(pop1.chromosomes, None)
+        self.assertEqual(pop1.fitness, None)
+
+        pop1.chromosomes = [1, 2, 3]
+        pop1.fitness = [(1, 10), (2, 20), (3, 30)]
+        pop2 = Population(pop1)
+
+        self.assertIsNot(pop1, pop2)
+        self.assertEqual(pop1.chromosomes, pop2.chromosomes)
+        self.assertIsNot(pop1.chromosomes, pop2.chromosomes)
+        self.assertEqual(pop1.fitness, pop2.fitness)
+        self.assertIsNot(pop1.fitness, pop2.fitness)
 
 
 ###############################################################################

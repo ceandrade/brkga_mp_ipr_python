@@ -21,7 +21,9 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
-from brkga_mp_ipr.enums import BiasFunction, PathRelinkingType, \
+import copy
+
+from brkga_mp_ipr.enums import BiasFunctionType, PathRelinkingType, \
     PathRelinkingSelection
 
 ###############################################################################
@@ -78,7 +80,7 @@ class BrkgaParams:
         self.mutants_percentage = 0.0
         self.num_elite_parents = 0
         self.total_parents = 0
-        self.bias_type = BiasFunction.CONSTANT
+        self.bias_type = BiasFunctionType.CONSTANT
         self.num_independent_populations = 0
         self.pr_number_pairs = 0
         self.pr_minimum_distance = 0.0
@@ -93,6 +95,16 @@ class ExternalControlParams:
     """
     Represents additional control parameters that can be used outside this
     framework.
+
+    Attributes:
+        exchange_interval (int):  Interval at which elite chromosomes are
+            exchanged (0 means no exchange) [> 0].
+
+        num_exchange_indivuduals (int): Number of elite chromosomes exchanged
+            from each population [> 0].
+
+        reset_interval (int): Interval at which the populations are reset
+            (0 means no reset) [> 0].
     """
 
     def __init__(self, exchange_interval: int = 0,
@@ -101,22 +113,9 @@ class ExternalControlParams:
         """
         Initializes a ExternalControlParams object.
         """
-
         self.exchange_interval = exchange_interval
-        """
-        Interval at which elite chromosomes are exchanged
-        (0 means no exchange) [> 0].
-        """
-
         self.num_exchange_indivuduals = num_exchange_indivuduals
-        """
-        Number of elite chromosomes exchanged from each population [> 0].
-        """
-
         self.reset_interval = reset_interval
-        """
-        Interval at which the populations are reset (0 means no reset) [> 0].
-        """
 
 ###############################################################################
 
@@ -146,3 +145,33 @@ class BaseChromosome(list):
     ``BaseChromosome`` constructor.
     """
     pass
+
+###############################################################################
+
+class Population():
+    """
+    Encapsulates a population of chromosomes. Note that this struct is **NOT**
+    meant to be used externally of this unit.
+
+    Attributes:
+        chromosomes (list(BaseChromosome)): Population of chromosomes.
+
+        fitness (list((float, int))): Fitness of a each chromosome.
+            Each pair represents the fitness and the chromosome index.
+    """
+
+    def __init__(self, other_population = None):
+        """
+        Initializes a new population. If ``other_population`` is not ``None``,
+        we copy it.
+
+        Args:
+            other_population (Population): The population to be copied.
+        """
+
+        self.chromosomes = None
+        self.fitness = None
+
+        if other_population is not None:
+            self.chromosomes = copy.deepcopy(other_population.chromosomes)
+            self.fitness = copy.deepcopy(other_population.fitness)

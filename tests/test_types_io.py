@@ -102,7 +102,7 @@ class Test(unittest.TestCase):
         self.assertEqual(brkga_params.mutants_percentage, 0.15)
         self.assertEqual(brkga_params.num_elite_parents, 2)
         self.assertEqual(brkga_params.total_parents, 3)
-        self.assertEqual(brkga_params.bias_type, BiasFunction.LOGINVERSE)
+        self.assertEqual(brkga_params.bias_type, BiasFunctionType.LOGINVERSE)
         self.assertEqual(brkga_params.num_independent_populations, 3)
         self.assertEqual(brkga_params.pr_number_pairs, 0)
         self.assertEqual(brkga_params.pr_minimum_distance, 0.15)

@@ -6,7 +6,7 @@ enums.py: Definitions of useful enumerations.
 This code is released under LICENSE.md.
 
 Created on:  Nov 05, 2019 by ceandrade
-Last update: Nov 08, 2019 by ceandrade
+Last update: Nov 09, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -64,7 +64,7 @@ class Sense(ParsingEnum):
 ###############################################################################
 
 @unique
-class BiasFunction(ParsingEnum):
+class BiasFunctionType(ParsingEnum):
     """
     Specifies a bias function when choosing parents to mating. This function
     substitutes the :math:`\\rho` (rho) parameter from the original BRKGA.
