@@ -21,9 +21,14 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
+from copy import deepcopy
+import math
+from random import Random
 import unittest
 
-from brkga_mp_ipr.algorithm import BRKGA_MP_IPR
+from brkga_mp_ipr.algorithm import BrkgaMpIpr
+from brkga_mp_ipr.enums import *
+from brkga_mp_ipr.types import BaseChromosome, BrkgaParams
 
 class Test(unittest.TestCase):
     """
@@ -39,6 +44,31 @@ class Test(unittest.TestCase):
 
         Test.maxDiff = None
 
+        self.default_brkga_params = BrkgaParams()
+        self.default_brkga_params.population_size = 10
+        self.default_brkga_params.elite_percentage = 0.3
+        self.default_brkga_params.mutants_percentage = 0.1
+        self.default_brkga_params.num_elite_parents = 1
+        self.default_brkga_params.total_parents = 2
+        self.default_brkga_params.bias_type = BiasFunctionType.LOGINVERSE
+        self.default_brkga_params.num_independent_populations = 3
+        self.default_brkga_params.pr_number_pairs = 0
+        self.default_brkga_params.pr_minimum_distance = 0.0
+        self.default_brkga_params.pr_type = PathRelinkingType.DIRECT
+        self.default_brkga_params.pr_selection = PathRelinkingSelection.BESTSOLUTION
+        self.default_brkga_params.alpha_block_size = 1.0
+        self.default_brkga_params.pr_percentage = 1.0
+
+        self.default_param_values = {
+            "decoder": None,
+            "sense": Sense.MAXIMIZE,
+            "seed": 2700001,
+            "chromosome_size": 100,
+            "params": self.default_brkga_params,
+            "evolutionary_mechanism_on": True,
+            "chrmosome_type": BaseChromosome
+        }
+
     ###########################################################################
 
     def test_better_than(self):
@@ -46,7 +76,8 @@ class Test(unittest.TestCase):
         Tests get_current_population() method.
         """
 
-        brkga = BRKGA_MP_IPR()
+        param_values = deepcopy(self.default_param_values)
+        brkga = BrkgaMpIpr(**param_values)
         self.assertRaises(NotImplementedError, brkga.better_than, 0, 0)
 
 
