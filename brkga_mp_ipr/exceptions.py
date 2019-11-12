@@ -25,4 +25,3 @@ class LoadError(RuntimeError):
     """
     Specifies an error while reading a configuration file.
     """
-    pass

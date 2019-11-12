@@ -24,7 +24,7 @@ POSSIBILITY OF SUCH DAMAGE.
 from itertools import chain
 
 from brkga_mp_ipr.types import BrkgaParams, ExternalControlParams
-from brkga_mp_ipr.exceptions import *
+from brkga_mp_ipr.exceptions import LoadError
 
 ###############################################################################
 

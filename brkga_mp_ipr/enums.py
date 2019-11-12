@@ -43,6 +43,7 @@ class ParsingEnum(Enum):
         for member in cls:
             if member.name.upper() == str(name).upper():
                 return member
+        return None
 
     def __str__(self):
         """
@@ -65,9 +66,9 @@ class Sense(ParsingEnum):
 
 @unique
 class BiasFunctionType(ParsingEnum):
-    """
+    r"""
     Specifies a bias function when choosing parents to mating. This function
-    substitutes the :math:`\\rho` (rho) parameter from the original BRKGA.
+    substitutes the :math:`\rho` (rho) parameter from the original BRKGA.
     For a given rank :math:`r`, we have the following functions:
 
     - ``CONSTANT``: 1 / number of parents for mating (all individuals have the
@@ -135,8 +136,8 @@ class PathRelinkingResult(Flag):
     - ``NO_IMPROVEMENT``: path relink was done but no improveded solution was
       found.
 
-    - ``ELITE_IMPROVEMENT``: an improved solution among the elite set was found,
-      but the best solution was not improved.
+    - ``ELITE_IMPROVEMENT``: an improved solution among the elite set was
+      found, but the best solution was not improved.
 
     - ``BEST_IMPROVEMENT``: the best solution was improved.
     """

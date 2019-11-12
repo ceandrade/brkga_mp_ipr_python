@@ -30,6 +30,9 @@ from brkga_mp_ipr.algorithm import BrkgaMpIpr
 from brkga_mp_ipr.enums import *
 from brkga_mp_ipr.types import BaseChromosome, BrkgaParams
 
+from tests.instance import Instance
+from tests.decoders import SumDecode, RankDecode
+
 ###############################################################################
 
 class Test(unittest.TestCase):
@@ -46,6 +49,8 @@ class Test(unittest.TestCase):
 
         Test.maxDiff = None
 
+        self.chromosome_size = 100
+
         self.default_brkga_params = BrkgaParams()
         self.default_brkga_params.population_size = 10
         self.default_brkga_params.elite_percentage = 0.3
@@ -61,11 +66,15 @@ class Test(unittest.TestCase):
         self.default_brkga_params.alpha_block_size = 1.0
         self.default_brkga_params.pr_percentage = 1.0
 
+        self.instance = Instance(self.chromosome_size)
+        self.sum_decoder = SumDecode(self.instance)
+        self.rank_decoder = RankDecode(self.instance)
+
         self.default_param_values = {
-            "decoder": None,
+            "decoder": self.sum_decoder,
             "sense": Sense.MAXIMIZE,
-            "seed": 2700001,
-            "chromosome_size": 100,
+            "seed": 98747382473209,
+            "chromosome_size": self.chromosome_size,
             "params": self.default_brkga_params,
             "evolutionary_mechanism_on": True,
             "chrmosome_type": BaseChromosome
@@ -85,8 +94,8 @@ class Test(unittest.TestCase):
         param_values = deepcopy(self.default_param_values)
         brkga = BrkgaMpIpr(**param_values)
 
-        self.assertEqual(brkga.ELITE_SIZE, 3)
-        self.assertEqual(brkga.NUM_MUTANTS, 1)
+        self.assertEqual(brkga.elite_size, 3)
+        self.assertEqual(brkga.num_mutants, 1)
 
         brkga_params = param_values["params"]
         self.assertEqual(len(brkga._shuffled_individuals), brkga_params.population_size)
@@ -107,8 +116,8 @@ class Test(unittest.TestCase):
         param_values["evolutionary_mechanism_on"] = False
         param_values["params"].population_size = 10
         brkga = BrkgaMpIpr(**param_values)
-        self.assertEqual(brkga.ELITE_SIZE, 1)
-        self.assertEqual(brkga.NUM_MUTANTS, 9)
+        self.assertEqual(brkga.elite_size, 1)
+        self.assertEqual(brkga.num_mutants, 9)
 
         ########################
         # Test bias functions.
@@ -117,36 +126,42 @@ class Test(unittest.TestCase):
         param_values = deepcopy(self.default_param_values)
         param_values["params"].bias_type = BiasFunctionType.LOGINVERSE
         brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.LOGINVERSE)
         self.assertAlmostEqual(brkga._bias_function(1), 1.4426950408889634)
         self.assertAlmostEqual(brkga._bias_function(2), 0.9102392266268375)
         self.assertAlmostEqual(brkga._bias_function(3), 0.721347520444481)
 
         param_values["params"].bias_type = BiasFunctionType.LINEAR
         brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.LINEAR)
         self.assertAlmostEqual(brkga._bias_function(1), 1.0)
         self.assertAlmostEqual(brkga._bias_function(2), 0.5)
         self.assertAlmostEqual(brkga._bias_function(3), 0.333333333333)
 
         param_values["params"].bias_type = BiasFunctionType.QUADRATIC
         brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.QUADRATIC)
         self.assertAlmostEqual(brkga._bias_function(1), 1.0)
         self.assertAlmostEqual(brkga._bias_function(2), 0.25)
         self.assertAlmostEqual(brkga._bias_function(3), 0.111111111111)
 
         param_values["params"].bias_type = BiasFunctionType.CUBIC
         brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUBIC)
         self.assertAlmostEqual(brkga._bias_function(1), 1.0)
         self.assertAlmostEqual(brkga._bias_function(2), 0.125)
         self.assertAlmostEqual(brkga._bias_function(3), 0.037037037037037035)
 
         param_values["params"].bias_type = BiasFunctionType.EXPONENTIAL
         brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.EXPONENTIAL)
         self.assertAlmostEqual(brkga._bias_function(1), 0.36787944117144233)
         self.assertAlmostEqual(brkga._bias_function(2), 0.1353352832366127)
         self.assertAlmostEqual(brkga._bias_function(3), 0.049787068367863944)
 
         param_values["params"].bias_type = BiasFunctionType.CONSTANT
         brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CONSTANT)
         self.assertAlmostEqual(brkga._bias_function(1), 0.5)
         self.assertAlmostEqual(brkga._bias_function(2), 0.5)
         self.assertAlmostEqual(brkga._bias_function(3), 0.5)
@@ -161,13 +176,13 @@ class Test(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "chromosome size must be larger than zero: 0")
+                         "Chromosome size must be larger than zero: 0")
 
         param_values["chromosome_size"] = -10
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "chromosome size must be larger than zero: -10")
+                         "Chromosome size must be larger than zero: -10")
 
         # Population size
         param_values = deepcopy(self.default_param_values)
@@ -175,13 +190,13 @@ class Test(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "population_size size must be larger than zero: 0")
+                         "Population size size must be larger than zero: 0")
 
         param_values["params"].population_size = -10
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "population_size size must be larger than zero: -10")
+                         "Population size size must be larger than zero: -10")
 
         # Elite size
         param_values = deepcopy(self.default_param_values)
@@ -189,45 +204,45 @@ class Test(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "elite-set size less then one: 0")
+                         "Elite set size less then one: 0")
 
         param_values["params"].elite_percentage = -1.0
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "elite-set size less then one: -10")
+                         "Elite set size less then one: -10")
 
         param_values["params"].elite_percentage = 0.3
         param_values["params"].population_size = 2
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "elite-set size less then one: 0")
+                         "Elite set size less then one: 0")
 
         param_values["params"].elite_percentage = 1.1
         param_values["params"].population_size = 10
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "elite-set size (11) greater than population size (10)")
+                         "Elite set size (11) greater than population size (10)")
 
         # Mutant size
         param_values = deepcopy(self.default_param_values)
         param_values["params"].mutants_percentage = 0.0
         brkga = BrkgaMpIpr(**param_values)
-        self.assertEqual(brkga.NUM_MUTANTS, 0)
+        self.assertEqual(brkga.num_mutants, 0)
 
         param_values["params"].mutants_percentage = -1.0
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "mutant-set size less then zero: -10")
+                         "Mutant set size less then zero: -10")
 
         param_values["params"].mutants_percentage = 1.1
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "mutant-set size (11) greater than population size (10)")
+                         "Mutant set size (11) greater than population size (10)")
 
         # Elite + Mutant size.
         param_values = deepcopy(self.default_param_values)
@@ -236,7 +251,7 @@ class Test(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "elite-set size (6) + mutant-set size (6) greater "
+                         "Elite set size (6) + mutant set size (6) greater "
                          "than population size (10)")
 
         # Elite parents for mating.
@@ -245,30 +260,30 @@ class Test(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "num_elite_parents must be at least 1: 0")
+                         "Number of elite parents must be at least 1: 0")
 
         param_values["params"].num_elite_parents = 1
         param_values["params"].total_parents = 1
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "total_parents must be at least 2: 1")
+                         "Total parents must be at least 2: 1")
 
         param_values["params"].num_elite_parents = 2
         param_values["params"].total_parents = 2
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "num_elite_parents (2) is greater than or equal to "
-                         "total_parents (2)")
+                         "Number of elite parents (2) is greater than or "
+                         "equal to total_parents (2)")
 
         param_values["params"].num_elite_parents = 3
         param_values["params"].total_parents = 2
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "num_elite_parents (3) is greater than or equal to "
-                         "total_parents (2)")
+                         "Number of elite parents (3) is greater than or "
+                         "equal to total_parents (2)")
 
         brkga_params = param_values["params"]
         brkga_params.num_elite_parents = \
@@ -277,7 +292,7 @@ class Test(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "num_elite_parents (4) is greater than elite set (3)")
+                         "Number of elite parents (4) is greater than elite set (3)")
 
         # Number of independent populations.
         param_values = deepcopy(self.default_param_values)
@@ -285,7 +300,7 @@ class Test(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
-                         "number of parallel populations must be larger than zero: 0")
+                         "Number of parallel populations must be larger than zero: 0")
 
         # TODO: enable the following when IPR methods be implemented.
         # # alpha_block_size.
@@ -294,7 +309,7 @@ class Test(unittest.TestCase):
         # with self.assertRaises(ValueError) as context:
         #     brkga = BrkgaMpIpr(**param_values)
         # self.assertEqual(str(context.exception).strip(),
-        #                  "alpha_block_size must be larger than zero: 0")
+        #                  "Alpha block size must be larger than zero: 0")
 
         # # Percentage / path size.
         # param_values = deepcopy(self.default_param_values)
@@ -302,24 +317,145 @@ class Test(unittest.TestCase):
         # with self.assertRaises(ValueError) as context:
         #     brkga = BrkgaMpIpr(**param_values)
         # self.assertEqual(str(context.exception).strip(),
-        #                  "percentage / path size must be in (0, 1]: 0.0")
+        #                  "Percentage / path size must be in (0, 1]: 0.0")
 
         # param_values["params"].pr_percentage = 1.001
         # with self.assertRaises(ValueError) as context:
         #     brkga = BrkgaMpIpr(**param_values)
         # self.assertEqual(str(context.exception).strip(),
-        #                  "percentage / path size must be in (0, 1]: 1.001")
+        #                  "Percentage / path size must be in (0, 1]: 1.001")
 
+        # Invalid decoder object.
+        param_values = deepcopy(self.default_param_values)
+        param_values["decoder"] = None
+        with self.assertRaises(TypeError) as context:
+            brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(str(context.exception).strip(),
+                         "The given decoder (<class 'NoneType'>) has no 'decode()' method")
 
-    # ###########################################################################
+        param_values = deepcopy(self.default_param_values)
+        param_values["decoder"] = lambda x: sum(x)
+        with self.assertRaises(TypeError) as context:
+            brkga = BrkgaMpIpr(**param_values)
+        self.assertEqual(str(context.exception).strip(),
+                         "The given decoder (<class 'function'>) has no 'decode()' method")
 
-    # def test_set_initial_population(self):
-    #     """
-    #     Tests set_initial_population() method.
-    #     """
+    ###########################################################################
 
-    #     brkga = BRKGA_MP_IPR()
-    #     self.assertRaises(NotImplementedError, brkga.set_initial_population, [])
+    def test_set_initial_population(self):
+        """
+        Tests set_initial_population() method.
+        """
+
+        param_values = deepcopy(self.default_param_values)
+        param_values["chromosome_size"] = 3
+        param_values["params"].num_independent_populations = 2
+        brkga = BrkgaMpIpr(**param_values)
+
+        local_rng = Random(param_values["seed"])
+
+        chromosomes = [
+            BaseChromosome() for _ in range(brkga.params.population_size + 1)
+        ]
+        with self.assertRaises(ValueError) as context:
+            brkga.set_initial_population(chromosomes)
+        self.assertEqual(str(context.exception).strip(),
+                         "Number of given chromosomes (11) is large than "
+                         "the population size (10)")
+
+        chromosomes = [
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"] + 1)])
+        ]
+        with self.assertRaises(ValueError) as context:
+            brkga.set_initial_population(chromosomes)
+        self.assertEqual(str(context.exception).strip(),
+                         "Error on setting initial population: chromosome 0 "
+                         "does not have the required dimension "
+                         "(actual size: 4, required size: 3)")
+
+        chromosomes = [
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"] - 1)])
+        ]
+        with self.assertRaises(ValueError) as context:
+            brkga.set_initial_population(chromosomes)
+        self.assertEqual(str(context.exception).strip(),
+                         "Error on setting initial population: chromosome 0 "
+                         "does not have the required dimension "
+                         "(actual size: 2, required size: 3)")
+
+        chromosomes = [
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"] + 1)]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])])
+        ]
+        with self.assertRaises(ValueError) as context:
+            brkga.set_initial_population(chromosomes)
+        self.assertEqual(str(context.exception).strip(),
+                         "Error on setting initial population: chromosome 0 "
+                         "does not have the required dimension "
+                         "(actual size: 4, required size: 3)")
+
+        chromosomes = [
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"] + 1)]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])])
+        ]
+        with self.assertRaises(ValueError) as context:
+            brkga.set_initial_population(chromosomes)
+        self.assertEqual(str(context.exception).strip(),
+                         "Error on setting initial population: chromosome 1 "
+                         "does not have the required dimension "
+                         "(actual size: 4, required size: 3)")
+
+        chromosomes = [
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"] + 1)])
+        ]
+        with self.assertRaises(ValueError) as context:
+            brkga.set_initial_population(chromosomes)
+        self.assertEqual(str(context.exception).strip(),
+                         "Error on setting initial population: chromosome 2 "
+                         "does not have the required dimension "
+                         "(actual size: 4, required size: 3)")
+
+        chromosomes = [BaseChromosome([local_rng.random() for _ in
+                                      range(param_values["chromosome_size"])])]
+        brkga.set_initial_population(chromosomes)
+
+        self.assertEqual(brkga._current_populations[0].chromosomes[0], chromosomes[0])
+        self.assertIsNot(brkga._current_populations[0].chromosomes[0], chromosomes[0])
+
+        chromosomes[0] = BaseChromosome([0.1111, 0.2222, 0.3333])
+        self.assertNotEqual(brkga._current_populations[0].chromosomes[0], chromosomes[0])
+
+        chromosomes = [
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])])
+        ]
+        brkga.set_initial_population(chromosomes)
+
+        self.assertEqual(len(brkga._current_populations[0].chromosomes),
+                         len(chromosomes))
+        self.assertEqual(brkga._current_populations[0].chromosomes, chromosomes)
+        self.assertIsNot(brkga._current_populations[0].chromosomes, chromosomes)
+
+        self.assertEqual(brkga._initial_population, True)
 
     ###########################################################################
 
@@ -333,72 +469,99 @@ class Test(unittest.TestCase):
         param_values["params"].total_parents = 10
         brkga = BrkgaMpIpr(**param_values)
 
-        # TODO: enable this after finish the constructor.
         # After build, brkga_params function is never CUSTOM
-        # @test brkga_data.params.bias_type != CUSTOM
+        self.assertNotEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
         with self.assertRaises(ValueError) as context:
             brkga.set_bias_custom_function(lambda x: -x)
         self.assertEqual(str(context.exception).strip(),
-                         "bias_function must be positive non-increasing")
+                         "Bias function must be positive non-increasing")
 
         with self.assertRaises(ValueError) as context:
             brkga.set_bias_custom_function(lambda x: x)
         self.assertEqual(str(context.exception).strip(),
-                         "bias_function is not a non-increasing function")
+                         "Bias function is not a non-increasing function")
 
         with self.assertRaises(ValueError) as context:
             brkga.set_bias_custom_function(lambda x: x + 1)
         self.assertEqual(str(context.exception).strip(),
-                         "bias_function is not a non-increasing function")
+                         "Bias function is not a non-increasing function")
 
         with self.assertRaises(ValueError) as context:
             brkga.set_bias_custom_function(lambda x: math.log1p(x))
         self.assertEqual(str(context.exception).strip(),
-                         "bias_function is not a non-increasing function")
+                         "Bias function is not a non-increasing function")
 
         brkga.set_bias_custom_function(lambda x:  1.0 / math.log1p(x))
         self.assertAlmostEqual(brkga._total_bias_weight, 6.554970525044798)
 
         # After 2nd call to set_bias_custom_function, brkga_params function
         # is always CUSTOM
-        self.assertEqual(brkga.PARAMS.bias_type, BiasFunctionType.CUSTOM)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
-        brkga.set_bias_custom_function(lambda x:  1.0 / x)
+        brkga.set_bias_custom_function(lambda x: 1.0 / x)
         self.assertAlmostEqual(brkga._total_bias_weight, 2.9289682539682538)
-        self.assertEqual(brkga.PARAMS.bias_type, BiasFunctionType.CUSTOM)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
-        brkga.set_bias_custom_function(lambda x:  x ** -2.0)
+        brkga.set_bias_custom_function(lambda x: x ** -2.0)
         self.assertAlmostEqual(brkga._total_bias_weight, 1.5497677311665408)
-        self.assertEqual(brkga.PARAMS.bias_type, BiasFunctionType.CUSTOM)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
-        brkga.set_bias_custom_function(lambda x:  x ** -3.0)
+        brkga.set_bias_custom_function(lambda x: x ** -3.0)
         self.assertAlmostEqual(brkga._total_bias_weight, 1.197531985674193)
-        self.assertEqual(brkga.PARAMS.bias_type, BiasFunctionType.CUSTOM)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
-        brkga.set_bias_custom_function(lambda x:  math.exp(-x))
+        brkga.set_bias_custom_function(lambda x: math.exp(-x))
         self.assertAlmostEqual(brkga._total_bias_weight, 0.5819502851677112)
-        self.assertEqual(brkga.PARAMS.bias_type, BiasFunctionType.CUSTOM)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
         # This is a constance function.
-        brkga.set_bias_custom_function(lambda _:  1.0 / brkga.PARAMS.total_parents)
+        brkga.set_bias_custom_function(lambda _: 1.0 / brkga.params.total_parents)
         self.assertAlmostEqual(brkga._total_bias_weight, 0.9999999999999999)
-        self.assertEqual(brkga.PARAMS.bias_type, BiasFunctionType.CUSTOM)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
-        brkga.set_bias_custom_function(lambda x:  0.6325 / math.sqrt(x))
+        brkga.set_bias_custom_function(lambda x: 0.6325 / math.sqrt(x))
         self.assertAlmostEqual(brkga._total_bias_weight, 3.175781171302612)
-        self.assertEqual(brkga.PARAMS.bias_type, BiasFunctionType.CUSTOM)
+        self.assertEqual(brkga.params.bias_type, BiasFunctionType.CUSTOM)
 
+        #############################################
+        # Constant functions test for standard BRKGA
+        #############################################
 
-    # ###########################################################################
+        param_values = deepcopy(self.default_param_values)
+        param_values["params"].num_elite_parents = 1
+        param_values["params"].total_parents = 2
+        brkga = BrkgaMpIpr(**param_values)
 
-    # def test_initialize(self):
-    #     """
-    #     Tests initialize() method.
-    #     """
+        rho = 0.5
+        brkga.set_bias_custom_function(lambda x: rho if x == 1 else 1.0 - rho)
+        self.assertAlmostEqual(brkga._total_bias_weight, 1.0)
+        self.assertAlmostEqual(brkga._bias_function(1), 0.5)
+        self.assertAlmostEqual(brkga._bias_function(2), 0.5)
 
-    #     brkga = BRKGA_MP_IPR()
-    #     self.assertRaises(NotImplementedError, brkga.initialize)
+        rho = 0.75
+        brkga.set_bias_custom_function(lambda x: rho if x == 1 else 1.0 - rho)
+        self.assertAlmostEqual(brkga._total_bias_weight, 1.0)
+        self.assertAlmostEqual(brkga._bias_function(1), 0.75)
+        self.assertAlmostEqual(brkga._bias_function(2), 0.25)
+
+        rho = 0.9
+        brkga.set_bias_custom_function(lambda x: rho if x == 1 else 1.0 - rho)
+        self.assertAlmostEqual(brkga._total_bias_weight, 1.0)
+        self.assertAlmostEqual(brkga._bias_function(1), 0.9)
+        self.assertAlmostEqual(brkga._bias_function(2), 0.1)
+
+    ###########################################################################
+
+    def test_initialize(self):
+        """
+        Tests initialize() method.
+        """
+
+        param_values = deepcopy(self.default_param_values)
+        brkga = BrkgaMpIpr(**param_values)
+
+        self.assertRaises(NotImplementedError, brkga.initialize)
 
 
 ###############################################################################

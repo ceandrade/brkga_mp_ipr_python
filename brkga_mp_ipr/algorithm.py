@@ -24,6 +24,7 @@ POSSIBILITY OF SUCH DAMAGE.
 import copy
 import math
 from random import Random
+from typing import List, Callable
 
 from brkga_mp_ipr.enums import *
 from brkga_mp_ipr.types import *
@@ -31,6 +32,61 @@ from brkga_mp_ipr.types import *
 ###############################################################################
 
 class BrkgaMpIpr:
+    """
+    This class represents a Multi-Parent Biased Random-key Genetic Algorithm
+    with Implicit Path Relinking (BRKGA-MP-IPR).
+
+    **Main capabilities**
+
+    **Evolutionary process**
+
+    In the BRKGA-MP-IPR, we keep a population of chromosomes divided between
+    the elite and the non-elite group. During the mating, multiple parents
+    are chosen from the elite group and the non-elite group. They are sorted
+    either on no-decreasing order for minimization or non-increasing order to
+    maximization problems. Given this order, a bias function is applied to
+    the rank of each chromosome, resulting in weight for each one. Using a
+    roulette method based on the weights, the chromosomes are combined using
+    a biased crossover.
+
+    This code also implements the island model, where multiple populations
+    can be evolved in parallel, and migration between individuals between
+    the islands are performed using ``exchange_elite()`` method.
+
+    This code requires a `Decoder` object capable to map a chromosome to a
+    solution for the specific problem, and return a value to be used as
+    fitness to the decoded chromosome. The decoder must have the method
+
+    .. code-block:: python
+
+        def decode(self, chromosome: BaseChromosome, rewrite: bool = False) -> float:
+
+    where ``chromosome`` is an ``BaseChromosome`` object of representing a
+    solution and `rewrite` is a boolean indicating that if the decode should
+    rewrite the chromosome in case it implements local searches and modifies
+    the initial solution decoded from the chromosome.
+
+    Note that ``BaseChromosome`` is a simple list of floats and can be
+    manipulated as so. However, wrapping such a list into a new class allows
+    the user to customize the chromosome, adding new functionalities as
+    needed. Please, see ``BaseChromosome`` for more details.
+
+    Attributes:
+        params (BrkgaParams): The BRKGA and IPR hyper-parameters.
+
+        opt_sense (Sense): Indicates whether we are maximizing or minimizing.
+
+        chromosome_size (positive int): Number of genes in the chromosome.
+
+        elite_size (positive int): Number of elite items in the population.
+
+        num_mutants (positive int): Number of mutants introduced at each
+            generation into the population.
+
+        evolutionary_mechanism_on (bool): If false, no evolution is performed
+            but only chromosome decoding. Very useful to emulate a
+            multi-start algorithm.
+    """
 
     def __init__(self, decoder: object, sense: Sense, seed: int,
                  chromosome_size: int, params: BrkgaParams,
@@ -41,69 +97,73 @@ class BrkgaMpIpr:
         # Initial BRKGA Hyper-parameters assignmet.
         ###################
 
-        self.PARAMS = copy.deepcopy(params)
-        self.OPT_SENSE = sense
-        self.CHROMOSOME_SIZE = chromosome_size
-        self.EVOLUTIONARY_MECHANISM_ON = evolutionary_mechanism_on
+        self.params = copy.deepcopy(params)
+        self.opt_sense = sense
+        self.chromosome_size = chromosome_size
+        self.evolutionary_mechanism_on = evolutionary_mechanism_on
 
         if evolutionary_mechanism_on:
-            self.ELITE_SIZE = int(params.elite_percentage *
+            self.elite_size = int(params.elite_percentage *
                                   params.population_size)
-            self.NUM_MUTANTS = int(params.mutants_percentage *
+            self.num_mutants = int(params.mutants_percentage *
                                    params.population_size)
         else:
-            self.ELITE_SIZE = 1
-            self.NUM_MUTANTS = params.population_size - 1
+            self.elite_size = 1
+            self.num_mutants = params.population_size - 1
 
         ###################
         # Error checking
         ###################
 
         if chromosome_size < 1:
-            raise ValueError(f"chromosome size must be larger than "
+            raise ValueError(f"Chromosome size must be larger than "
                              f"zero: {chromosome_size}")
         elif params.population_size < 1:
-            raise ValueError(f"population_size size must be larger than "
+            raise ValueError(f"Population size size must be larger than "
                              f"zero: {params.population_size}")
-        elif self.ELITE_SIZE < 1:
-            raise ValueError(f"elite-set size less then one: "
-                             f"{self.ELITE_SIZE}")
-        elif self.ELITE_SIZE > params.population_size:
-            raise ValueError(f"elite-set size ({self.ELITE_SIZE}) greater than "
+        elif self.elite_size < 1:
+            raise ValueError(f"Elite set size less then one: "
+                             f"{self.elite_size}")
+        elif self.elite_size > params.population_size:
+            raise ValueError(f"Elite set size ({self.elite_size}) greater than "
                              f"population size ({params.population_size})")
-        elif self.NUM_MUTANTS < 0:
-            raise ValueError(f"mutant-set size less then zero: "
-                             f"{self.NUM_MUTANTS}")
-        elif self.NUM_MUTANTS > params.population_size:
-            raise ValueError(f"mutant-set size ({self.NUM_MUTANTS}) greater "
+        elif self.num_mutants < 0:
+            raise ValueError(f"Mutant set size less then zero: "
+                             f"{self.num_mutants}")
+        elif self.num_mutants > params.population_size:
+            raise ValueError(f"Mutant set size ({self.num_mutants}) greater "
                              f"than population size ({params.population_size})")
-        elif (self.ELITE_SIZE + self.NUM_MUTANTS) > params.population_size:
-            raise ValueError(f"elite-set size ({self.ELITE_SIZE}) + "
-                             f"mutant-set size ({self.NUM_MUTANTS}) greater "
+        elif (self.elite_size + self.num_mutants) > params.population_size:
+            raise ValueError(f"Elite set size ({self.elite_size}) + "
+                             f"mutant set size ({self.num_mutants}) greater "
                              f"than population size ({params.population_size})")
         elif params.num_elite_parents < 1:
-            raise ValueError(f"num_elite_parents must be at least 1: "
+            raise ValueError(f"Number of elite parents must be at least 1: "
                              f"{params.num_elite_parents}")
         elif params.total_parents < 2:
-            raise ValueError(f"total_parents must be at least 2: "
+            raise ValueError(f"Total parents must be at least 2: "
                              f"{params.total_parents}")
         elif params.num_elite_parents >= params.total_parents:
-            raise ValueError(f"num_elite_parents ({params.num_elite_parents}) "
+            raise ValueError(f"Number of elite parents ({params.num_elite_parents}) "
                              f"is greater than or equal to total_parents "
                              f"({params.total_parents})")
-        elif params.num_elite_parents > self.ELITE_SIZE:
-            raise ValueError(f"num_elite_parents ({params.num_elite_parents}) "
-                             f"is greater than elite set ({self.ELITE_SIZE})")
+        elif params.num_elite_parents > self.elite_size:
+            raise ValueError(f"Number of elite parents ({params.num_elite_parents}) "
+                             f"is greater than elite set ({self.elite_size})")
         elif params.num_independent_populations < 1:
-            raise ValueError(f"number of parallel populations must be larger "
+            raise ValueError(f"Number of parallel populations must be larger "
                              f"than zero: {params.num_independent_populations}")
         # TODO: enable the following when IPR methods be implemented.
         # elif params.alpha_block_size <= 0.0:
-        #     raise ValueError(f"alpha_block_size must be larger than zero: "
+        #     raise ValueError(f"Alpha block size must be larger than zero: "
         #                      f"{params.alpha_block_size}")
         # elif params.pr_percentage <= 0.0 or params.pr_percentage > 1.0:
-        #     raise ValueError(f"percentage / path size must be in (0, 1]: "
+        #     raise ValueError(f"Percentage / path size must be in (0, 1]: "
         #                      f"{params.pr_percentage}")
+
+        elif not hasattr(decoder, "decode"):
+            raise TypeError(f"The given decoder ({type(decoder)}) "
+                            f"has no 'decode()' method")
 
         ###################
         # Engines
@@ -163,32 +223,79 @@ class BrkgaMpIpr:
         # Sets the bias function.
         if params.bias_type == BiasFunctionType.LOGINVERSE:
             self.set_bias_custom_function(lambda r: 1.0 / math.log1p(r))
+            self.params.bias_type = BiasFunctionType.LOGINVERSE
 
         elif params.bias_type == BiasFunctionType.LINEAR:
             self.set_bias_custom_function(lambda r: 1.0 / r)
+            self.params.bias_type = BiasFunctionType.LINEAR
 
         elif params.bias_type == BiasFunctionType.QUADRATIC:
             self.set_bias_custom_function(lambda r: r ** -2.0)
+            self.params.bias_type = BiasFunctionType.QUADRATIC
 
         elif params.bias_type == BiasFunctionType.CUBIC:
             self.set_bias_custom_function(lambda r: r ** -3.0)
+            self.params.bias_type = BiasFunctionType.CUBIC
 
         elif params.bias_type == BiasFunctionType.EXPONENTIAL:
             self.set_bias_custom_function(lambda r: math.exp(-r))
+            self.params.bias_type = BiasFunctionType.EXPONENTIAL
 
         elif params.bias_type == BiasFunctionType.CONSTANT:
             self.set_bias_custom_function(lambda _: 1.0 / params.total_parents)
+            self.params.bias_type = BiasFunctionType.CONSTANT
 
     ###########################################################################
     # Initialization methods
     ###########################################################################
 
-    def set_initial_population(self, chromosomes: list) -> None:
-        raise NotImplementedError
+    def set_initial_population(self, chromosomes: List[BaseChromosome]) -> None:
+        """
+        Sets initial individuals into the poulation to work as warm-starters.
+        Such individuals can be obtained from solutions of external
+        procedures such as fast heuristics, other methaheuristics, or even
+        relaxations from a mixed integer programming model that models the
+        problem.
+
+        All given solutions are assigned to one population only. Therefore, the
+        maximum number of solutions is the size of the populations.
+
+        Args:
+            chromosomes (list of BaseChromosome): a set of individuals or
+                solutions encoded as BaseChromosomes.
+
+        Raises:
+            ``ValueError``: if the number of given chromosomes is larger than
+                the population size; if the sizes of the given chromosomes do
+                not match with the required chromosome size.
+        """
+
+        if len(chromosomes) > self.params.population_size:
+            raise ValueError(
+                f"Number of given chromosomes ({len(chromosomes)}) is large "
+                f"than the population size ({self.params.population_size})"
+            )
+
+        self._current_populations = [
+            Population() for _ in range(self.params.num_independent_populations)
+        ]
+
+        for i, chromosome in enumerate(chromosomes):
+            if len(chromosome) != self.chromosome_size:
+                raise ValueError(
+                    f"Error on setting initial population: chromosome {i} "
+                    f"does not have the required dimension (actual size: "
+                    f"{len(chromosome)}, required size: {self.chromosome_size})"
+                )
+            self._current_populations[0].chromosomes\
+                .append(BaseChromosome(chromosome))
+
+        self._initial_population = True
 
     ###########################################################################
 
-    def set_bias_custom_function(self, bias_function: callable) -> None:
+    def set_bias_custom_function(self, bias_function: Callable[[int], float]) \
+            -> None:
         """
         Sets a new bias function to be used to rank the chromosomes during
         the mating. **It must be a positive non-increasing function** returning
@@ -206,32 +313,44 @@ class BrkgaMpIpr:
             bias_function: A positive non-increasing function.
 
         Raises:
-            ``ArgumentError``: In case the function is not a non-increasing
+            ``ValueError``: In case the function is not a non-increasing
                 positive function.
         """
 
         bias_values = [
             x for x in map(bias_function,
-                           range(1, self.PARAMS.total_parents + 1))
+                           range(1, self.params.total_parents + 1))
         ]
 
         if any(map(lambda x: x < 0.0, bias_values)):
-            raise ValueError(f"bias_function must be positive non-increasing")
+            raise ValueError(f"Bias function must be positive non-increasing")
 
         for i, value in enumerate(bias_values[1:]):
             if value > bias_values[i]:
-                raise ValueError(f"bias_function is not a non-increasing "
+                raise ValueError(f"Bias function is not a non-increasing "
                                  "function")
 
-        if bias_function:
-            self.PARAMS.bias_type = BiasFunctionType.CUSTOM
-
+        self.params.bias_type = BiasFunctionType.CUSTOM
         self._bias_function = bias_function
         self._total_bias_weight = sum(bias_values)
 
     ###########################################################################
 
     def initialize(self, true_init: bool = True) -> None:
+        """
+        Initializes the populations and others data structures of the BRKGA.
+        If an initial population is supplied, this method completes the
+        remaining individuals, if they do not exist.
+
+        Warning:
+            THIS METHOD MUST BE CALLED BEFORE ANY OPTIMIZATION METHODS.
+
+        This method also performs the initial decoding of the chromosomes.
+        Therefore, depending on the decoder implementation, this can take a
+        while, and the user may want to time such procedure in his/her
+        experiments.
+        """
+
         raise NotImplementedError
 
     ###########################################################################
@@ -297,13 +416,6 @@ class BrkgaMpIpr:
                     number_pairs: int, minimum_distance: float,
                     block_size: int = 1, max_time: int = 0,
                     percentage: int = 1.0) -> PathRelinkingResult:
-        raise NotImplementedError
-
-    ###########################################################################
-    # Core helper methods
-    ###########################################################################
-
-    def better_than(self, a1: float, a2: float) -> bool:
         raise NotImplementedError
 
     ###########################################################################

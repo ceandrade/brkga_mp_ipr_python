@@ -144,7 +144,6 @@ class BaseChromosome(list):
     constructor. We need at least one argument to be passed to
     ``BaseChromosome`` constructor.
     """
-    pass
 
 ###############################################################################
 
@@ -154,13 +153,13 @@ class Population():
     meant to be used externally of this unit.
 
     Attributes:
-        chromosomes (list(BaseChromosome)): Population of chromosomes.
+        chromosomes (List[BaseChromosome]): Population of chromosomes.
 
-        fitness (list((float, int))): Fitness of a each chromosome.
+        fitness (List[Tuple[float, int]]): Fitness of a each chromosome.
             Each pair represents the fitness and the chromosome index.
     """
 
-    def __init__(self, other_population = None):
+    def __init__(self, other_population=None):
         """
         Initializes a new population. If ``other_population`` is not ``None``,
         we copy it.
@@ -169,8 +168,8 @@ class Population():
             other_population (Population): The population to be copied.
         """
 
-        self.chromosomes = None
-        self.fitness = None
+        self.chromosomes = list()
+        self.fitness = list()
 
         if other_population is not None:
             self.chromosomes = copy.deepcopy(other_population.chromosomes)
