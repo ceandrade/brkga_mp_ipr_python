@@ -6,7 +6,7 @@ algorithm.py: Definition of BRKGA-MP-API methods and algorithms.
 This code is released under LICENSE.md.
 
 Created on:  Nov 08, 2019 by ceandrade
-Last update: Nov 09, 2019 by ceandrade
+Last update: Nov 13, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -59,7 +59,7 @@ class BrkgaMpIpr:
 
     .. code-block:: python
 
-        def decode(self, chromosome: BaseChromosome, rewrite: bool = False) -> float:
+        def decode(self, chromosome: BaseChromosome, rewrite: bool) -> float:
 
     where ``chromosome`` is an ``BaseChromosome`` object of representing a
     solution and `rewrite` is a boolean indicating that if the decode should
@@ -182,25 +182,21 @@ class BrkgaMpIpr:
         # Algorithm data
         ###################
 
-        self._ChrmosomeType = chrmosome_type
-        """This is the class/type for the chromosomes."""
+        self._ChromosomeType = chrmosome_type
+        """(type BaseChromosome) This is the class/type for the chromosomes."""
 
-        self._previous_populations = [
-            Population() for _ in range(params.num_independent_populations)
-        ]
-        """Previous populations."""
+        self._current_populations = []
+        """(List[Population]) Current populations."""
 
-        self._current_populations = [
-            Population() for _ in range(params.num_independent_populations)
-        ]
-        """Current populations."""
+        self._previous_populations = []
+        """(List[Population]) Previous populations."""
 
         self._bias_function = None
-        """The bias function."""
+        """(Callable[[int], float]) The bias function."""
 
         self._total_bias_weight = 0.0
-        """Holds the sum of the results of each raking given a bias function.
-           This value is needed to normalization."""
+        """(float) Holds the sum of the results of each raking given a bias
+           function. This value is needed to normalization."""
 
         self._shuffled_individuals = [0] * params.population_size
         """Used to shuffled individual/chromosome indices during the mate."""
@@ -336,7 +332,7 @@ class BrkgaMpIpr:
 
     ###########################################################################
 
-    def initialize(self, true_init: bool = True) -> None:
+    def initialize(self) -> None:
         """
         Initializes the populations and others data structures of the BRKGA.
         If an initial population is supplied, this method completes the
@@ -349,9 +345,83 @@ class BrkgaMpIpr:
         Therefore, depending on the decoder implementation, this can take a
         while, and the user may want to time such procedure in his/her
         experiments.
+
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before
+                and it is not a ``reset()`` call.
+
+            ``ValueError``: If the bias functions is not set.
         """
 
-        raise NotImplementedError
+        if self._initialized and not self._reset_phase:
+            raise RuntimeError("The algorithm is already initialized. "
+                               "Please call 'reset()' instead.")
+
+        if self._bias_function is None:
+            raise ValueError("The bias function is not defined. "
+                             "Call set_bias_custom_function() before call "
+                             "initialize().")
+
+        # If we have warmstaters, complete the population if necessary.
+        # Note that it is done only in the true initialization.
+        pop_start = 0
+        if self._current_populations and not self._reset_phase:
+            population = self._current_populations[0]
+            for _ in range(len(population.chromosomes),
+                               self.params.population_size):
+                new_chr = self.generate_chromosome(self.chromosome_size)
+                population.chromosomes.append(new_chr)
+
+            population.fitness = [
+                (0.0, 0) for _ in range(self.params.population_size)
+            ]
+            pop_start = 1
+
+        elif not self._current_populations:
+            self._current_populations = [
+                Population()
+                for _ in range(self.params.num_independent_populations)
+            ]
+            self._previous_populations = [
+                Population()
+                for _ in range(self.params.num_independent_populations)
+            ]
+        # end if
+
+        # Build the remaining populations and associated data structures.
+        for i in range(pop_start, self.params.num_independent_populations):
+            # If no reset, allocate memory.
+            if not self._reset_phase:
+                population = self._current_populations[i]
+                for _ in range(self.params.population_size):
+                    population.chromosomes.append(
+                        self.generate_chromosome(self.chromosome_size)
+                    )
+                # end for
+                population.fitness = [
+                    (0.0, 0) for _ in range(self.params.population_size)
+                ]
+            else:
+                for chromosome in self._current_populations[i].chromosomes:
+                    self.fill_chromosome(chromosome)
+            # end if
+        # end for
+
+        # Perform initial decoding. It may take a while.
+        for population in self._current_populations:
+            for i, chromosome in enumerate(population.chromosomes):
+                value = self._decoder.decode(chromosome=chromosome,
+                                             rewrite=True)
+                population.fitness[i] = (value, i)
+            population.fitness.sort(reverse=(self.opt_sense == Sense.MAXIMIZE))
+        # end for
+
+        # Copy the data to previous populations.
+        # **NOTE:** (ceandrade) During reset phase, copying item by item maybe
+        # faster than deepcoping (which allocates new memory).
+        self._previous_populations = copy.deepcopy(self._current_populations)
+        self._initialized = True
+        self._reset_phase = False
 
     ###########################################################################
     # Population manipulation methods
@@ -363,7 +433,20 @@ class BrkgaMpIpr:
     ###########################################################################
 
     def reset(self) -> None:
-        raise NotImplementedError
+        """
+        Resets all populations with brand new keys. All warm-start solutions
+        provided by ``set_initial_population()`` are discarded. You may
+        use ``inject_chromosome()`` to insert those solutions again.
+
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before.
+        """
+
+        if not self._initialized:
+            raise RuntimeError("The algorithm hasn't been initialized. "
+                               "Call 'initialize()' before 'reset()'")
+        self._reset_phase = True
+        self.initialize()
 
     ###########################################################################
 
@@ -382,25 +465,126 @@ class BrkgaMpIpr:
     # Support methods
     ###########################################################################
 
-    # TODO: fix return annotation to population.
-    def get_current_population(self, population_index: int = 0) -> None:
-        raise NotImplementedError
+    def get_best_fitness(self) -> float:
+        """
+        Return the fitness/value of the best individual found so far among
+        all populations.
+
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before.
+        """
+
+        if not self._initialized:
+            raise RuntimeError("The algorithm hasn't been initialized. Call "
+                               "'initialize()' before 'get_best_fitness()'")
+
+        best = self._current_populations[0].fitness[0][0]
+        for i in range(1, self.params.num_independent_populations):
+            if (self._current_populations[i].fitness[0][0] < best) == \
+               (self.opt_sense == Sense.MINIMIZE):
+                best = self._current_populations[i].fitness[0][0]
+        return best
 
     ###########################################################################
 
     def get_best_chromosome(self) -> BaseChromosome:
-        raise NotImplementedError
+        """
+        Return a deep copy of the best individual found so far among all
+        populations.
 
-    ###########################################################################
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before.
+        """
 
-    def get_best_fitness(self) -> float:
-        raise NotImplementedError
+        if not self._initialized:
+            raise RuntimeError("The algorithm hasn't been initialized. Call "
+                               "'initialize()' before 'get_best_chromosome()'")
+
+        best_value = self._current_populations[0].fitness[0][0]
+        best_individual = None
+        for i in range(1, self.params.num_independent_populations):
+            value, idx = self._current_populations[i].fitness[0]
+            if (value < best_value) == (self.opt_sense == Sense.MINIMIZE):
+                best_value = value
+                best_individual = self._current_populations[i].chromosomes[idx]
+
+        return copy.deepcopy(best_individual)
 
     ###########################################################################
 
     def get_chromosome(self, population_index: int, position: int) \
             -> BaseChromosome:
-        raise NotImplementedError
+        """
+        Returns a deep copy of the chromosome ranked at ``position``
+        in the population ``population_index``.
+
+        Args:
+            population_index (positive int): the population from where
+                fetch the chromosome.
+
+            position (positive int): position the chromosome position,
+                ordered by fitness. The best chromosome is located in
+                position 0.
+
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before.
+
+            ``ValueError``: either if ``population_index < 0`` or
+                ``population_index >= num_independent_populations``.
+
+            ``ValueError``: either if when ``position < 0`` or
+                ``position >= population_size``.
+        """
+
+        if not self._initialized:
+            raise RuntimeError("The algorithm hasn't been initialized. Call "
+                               "'initialize()' before 'get_chromosome()'")
+
+        if population_index < 0 or \
+           population_index >= self.params.num_independent_populations:
+            raise ValueError(
+                f"Population must be in "
+                f"[0, {self.params.num_independent_populations - 1}]: "
+                f"{population_index}")
+
+        if position < 0 or position >= self.params.population_size:
+            raise ValueError(
+                f"Chromosome position must be in "
+                f"[0, {self.params.population_size - 1}]: "
+                f"{position}")
+
+        pop = self._current_populations[population_index]
+        return copy.deepcopy(pop.chromosomes[pop.fitness[position][1]])
+
+    ###########################################################################
+
+    def get_current_population(self, population_index: int = 0) -> None:
+        """
+        Returns a reference for population ``population_index``.
+
+        Args:
+            population_index (positive int): the index for the population.
+
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before.
+
+            ``ValueError``: either if ``population_index < 0`` or
+                ``population_index >= num_independent_populations``.
+        """
+
+        if not self._initialized:
+            raise RuntimeError("The algorithm hasn't been initialized. "
+                               "Call 'initialize()' before "
+                               "'get_current_population()'")
+
+        if population_index < 0 or \
+           population_index >= self.params.num_independent_populations:
+            raise ValueError(
+                f"Population must be in "
+                f"[0, {self.params.num_independent_populations - 1}]: "
+                f"{population_index}")
+
+        return self._current_populations[population_index]
 
     ###########################################################################
     # Optimization (evolutionary / Path-relink) methods
@@ -417,6 +601,38 @@ class BrkgaMpIpr:
                     block_size: int = 1, max_time: int = 0,
                     percentage: int = 1.0) -> PathRelinkingResult:
         raise NotImplementedError
+
+    ###########################################################################
+    # Helper methods
+    ###########################################################################
+
+    def generate_chromosome(self, chromosome_size: int) -> BaseChromosome:
+        """
+        Generates a new chromosome with the given size. The new chromosome
+        is an object of class ``self._ChromosomeType``, given in the
+        constructor. If the chromosome type is not given in the constructor,
+        BaseChromosome is used instead. Please, see the documentation of both
+        the BaseChromosome and the constructor for more details.
+
+        Args:
+            chromosome_size (positive int): The size of the chromosome.
+        """
+        return self._ChromosomeType([
+            self._rng.random() for _ in range(chromosome_size)
+        ])
+
+    ###########################################################################
+
+    def fill_chromosome(self, chromosome: BaseChromosome) -> None:
+        """
+        Fills a given chromosome with random keys, using the pre-allocated
+        memory.
+
+        Args:
+            chromosome (BaseChromosome): The chromosome to be filled.
+        """
+        for i in range(len(chromosome)):
+            chromosome[i] = self._rng.random()
 
     ###########################################################################
     # Core internal/private evolutionary methods

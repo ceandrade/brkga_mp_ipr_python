@@ -6,7 +6,7 @@ test_algorithm_initialization.py: Tests constructor and initialization methods.
 This code is released under LICENSE.md.
 
 Created on:  Nov 08, 2019 by ceandrade
-Last update: Nov 09, 2019 by ceandrade
+Last update: Nov 13, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -29,9 +29,11 @@ import unittest
 from brkga_mp_ipr.algorithm import BrkgaMpIpr
 from brkga_mp_ipr.enums import *
 from brkga_mp_ipr.types import BaseChromosome, BrkgaParams
+from brkga_mp_ipr.types_io import load_configuration
 
 from tests.instance import Instance
 from tests.decoders import SumDecode, RankDecode
+from tests.paths_constants import *
 
 ###############################################################################
 
@@ -107,7 +109,7 @@ class Test(unittest.TestCase):
             local_rng.random()
         self.assertEqual(brkga._rng.getstate(), local_rng.getstate())
 
-        self.assertEqual(brkga._ChrmosomeType, BaseChromosome)
+        self.assertEqual(brkga._ChromosomeType, BaseChromosome)
 
         ########################
         # Test multi-start building.
@@ -333,12 +335,77 @@ class Test(unittest.TestCase):
         self.assertEqual(str(context.exception).strip(),
                          "The given decoder (<class 'NoneType'>) has no 'decode()' method")
 
-        param_values = deepcopy(self.default_param_values)
         param_values["decoder"] = lambda x: sum(x)
         with self.assertRaises(TypeError) as context:
             brkga = BrkgaMpIpr(**param_values)
         self.assertEqual(str(context.exception).strip(),
                          "The given decoder (<class 'function'>) has no 'decode()' method")
+
+    ###########################################################################
+
+    def test_generate_chromosome(self):
+        """
+        Tests generate_chromosome() method.
+        """
+
+        param_values = deepcopy(self.default_param_values)
+        brkga = BrkgaMpIpr(**param_values)
+
+        local_rng = Random(param_values["seed"])
+        # Same warm up that the one in the constructor.
+        for _ in range(1000):
+            local_rng.random()
+        self.assertEqual(brkga._rng.getstate(), local_rng.getstate())
+
+        size = param_values["chromosome_size"]
+        standard = BaseChromosome([local_rng.random() for _ in range(size)])
+        new_chr = brkga.generate_chromosome(size)
+        self.assertEqual(len(new_chr), size)
+        self.assertEqual(new_chr, standard)
+
+        size = 1000
+        standard = BaseChromosome([local_rng.random() for _ in range(size)])
+        new_chr = brkga.generate_chromosome(size)
+        self.assertEqual(len(new_chr), size)
+        self.assertEqual(new_chr, standard)
+
+    ###########################################################################
+
+    def test_fill_chromosome(self):
+        """
+        Tests fill_chromosome() method.
+        """
+
+        param_values = deepcopy(self.default_param_values)
+        brkga = BrkgaMpIpr(**param_values)
+
+        local_rng = Random(param_values["seed"])
+        # Same warm up that the one in the constructor.
+        for _ in range(1000):
+            local_rng.random()
+        self.assertEqual(brkga._rng.getstate(), local_rng.getstate())
+
+        size = param_values["chromosome_size"]
+        chromosome = BaseChromosome([0.0 for _ in range(size)])
+        old_chrmosome = deepcopy(chromosome)
+
+        brkga.fill_chromosome(chromosome)
+
+        local_chr = BaseChromosome([local_rng.random() for _ in range(size)])
+        self.assertEqual(len(chromosome), len(old_chrmosome))
+        self.assertNotEqual(chromosome, old_chrmosome)
+        self.assertEqual(chromosome, local_chr)
+
+        size = 1000
+        chromosome = BaseChromosome([0.0 for _ in range(size)])
+        old_chrmosome = deepcopy(chromosome)
+
+        brkga.fill_chromosome(chromosome)
+
+        local_chr = BaseChromosome([local_rng.random() for _ in range(size)])
+        self.assertEqual(len(chromosome), len(old_chrmosome))
+        self.assertNotEqual(chromosome, old_chrmosome)
+        self.assertEqual(chromosome, local_chr)
 
     ###########################################################################
 
@@ -558,11 +625,181 @@ class Test(unittest.TestCase):
         Tests initialize() method.
         """
 
+        # Double initialization.
         param_values = deepcopy(self.default_param_values)
         brkga = BrkgaMpIpr(**param_values)
 
-        self.assertRaises(NotImplementedError, brkga.initialize)
+        # 1st initialization.
+        brkga.initialize()
+        with self.assertRaises(RuntimeError) as context:
+            # 2nd initialization.
+            brkga.initialize()
+        self.assertEqual(str(context.exception).strip(),
+                         "The algorithm is already initialized. "
+                         "Please call 'reset()' instead.")
 
+        # Custom function is not defined.
+        filename = os.path.join(CONFIG_DIR, "custom_bias_function.conf")
+        brkga_params, _ = load_configuration(filename)
+
+        param_values = deepcopy(self.default_param_values)
+        param_values["params"] = brkga_params
+        brkga = BrkgaMpIpr(**param_values)
+
+        with self.assertRaises(ValueError) as context:
+            brkga.initialize()
+        self.assertEqual(str(context.exception).strip(),
+                         "The bias function is not defined. Call "
+                         "set_bias_custom_function() before call initialize().")
+
+        ########################
+        # Test without warmstart
+        ########################
+
+        param_values = deepcopy(self.default_param_values)
+        param_values["sense"] = Sense.MAXIMIZE
+        params = param_values["params"]
+        brkga = BrkgaMpIpr(**param_values)
+        brkga.initialize()
+
+        self.assertTrue(brkga._initialized,
+                        "Flag 'brkga._initialized' is supposed to be 'True'")
+        self.assertFalse(brkga._reset_phase,
+                        "Flag 'brkga._reset_phase' is supposed to be 'False'")
+
+        self.assertEqual(len(brkga._current_populations),
+                         params.num_independent_populations)
+        self.assertEqual(len(brkga._previous_populations),
+                         params.num_independent_populations)
+
+        for i in range(params.num_independent_populations):
+            self.assertEqual(len(brkga._current_populations[i].chromosomes),
+                             params.population_size)
+            self.assertEqual(len(brkga._current_populations[i].fitness),
+                             params.population_size)
+            self.assertEqual(len(brkga._previous_populations[i].chromosomes),
+                             params.population_size)
+            self.assertEqual(len(brkga._previous_populations[i].fitness),
+                             params.population_size)
+
+            self.assertEqual(brkga._current_populations[i].chromosomes,
+                             brkga._previous_populations[i].chromosomes)
+
+            self.assertIsNot(brkga._current_populations[i].chromosomes,
+                             brkga._previous_populations[i].chromosomes)
+
+            correct_order = True
+            for j in range(1, brkga.params.population_size):
+                correct_order &= \
+                    brkga._current_populations[i].fitness[j - 1][0] >= \
+                    brkga._current_populations[i].fitness[j][0]
+            # end for
+            self.assertTrue(correct_order, "incorrect chromosome order")
+        # end for
+
+        param_values = deepcopy(self.default_param_values)
+        param_values["sense"] = Sense.MINIMIZE
+        params = param_values["params"]
+        brkga = BrkgaMpIpr(**param_values)
+        brkga.initialize()
+
+        for i in range(params.num_independent_populations):
+            correct_order = True
+            for j in range(1, brkga.params.population_size):
+                correct_order &= \
+                    brkga._current_populations[i].fitness[j - 1][0] <= \
+                    brkga._current_populations[i].fitness[j][0]
+            # end for
+            self.assertTrue(correct_order, "incorrect chromosome order")
+        # end for
+
+        ########################
+        # Test with warmstart
+        ########################
+
+        local_rng = Random(param_values["seed"])
+        chromosomes = [
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])]),
+            BaseChromosome([local_rng.random() for _ in
+                            range(param_values["chromosome_size"])])
+        ]
+
+        param_values = deepcopy(self.default_param_values)
+        param_values["sense"] = Sense.MINIMIZE
+        params = param_values["params"]
+        brkga = BrkgaMpIpr(**param_values)
+        brkga.set_initial_population(chromosomes)
+        brkga.initialize()
+
+        for i in range(params.num_independent_populations):
+            self.assertEqual(len(brkga._current_populations[i].chromosomes),
+                             params.population_size)
+            self.assertEqual(len(brkga._current_populations[i].fitness),
+                             params.population_size)
+            self.assertEqual(len(brkga._previous_populations[i].chromosomes),
+                             params.population_size)
+            self.assertEqual(len(brkga._previous_populations[i].fitness),
+                             params.population_size)
+
+            self.assertEqual(brkga._current_populations[i].chromosomes,
+                             brkga._previous_populations[i].chromosomes)
+
+            self.assertIsNot(brkga._current_populations[i].chromosomes,
+                             brkga._previous_populations[i].chromosomes)
+        # end for
+
+        old_chr = deepcopy(chromosomes[0])
+        param_values["decoder"].decode(chromosomes[0], rewrite=True)
+        self.assertNotEqual(chromosomes[0], old_chr)
+        self.assertEqual(brkga._current_populations[0].chromosomes[0],
+                         chromosomes[0])
+
+        # Create a local chromosome and applied the decoder on it.
+        local_rng = Random(param_values["seed"])
+        for _ in range(1000):
+            local_rng.random()
+        local_chr = BaseChromosome([
+            local_rng.random() for _ in range(param_values["chromosome_size"])
+        ])
+        param_values["decoder"].decode(local_chr, rewrite=True)
+
+        # 4th chromosome must be the 1st generated one due to the warmstart.
+        self.assertEqual(brkga._current_populations[0].chromosomes[3],
+                         local_chr)
+
+        ########################
+        # Test reset phase
+        ########################
+
+        param_values = deepcopy(self.default_param_values)
+        params = param_values["params"]
+        brkga = BrkgaMpIpr(**param_values)
+        brkga.initialize()
+
+        # Create a local RNG and advance it until the same state as the
+        # internal BRKGA RNG after initialization.
+        local_rng = Random(param_values["seed"])
+        skip = 1000 + params.num_independent_populations * \
+               params.population_size * brkga.chromosome_size
+        for _ in range(skip):
+            local_rng.random()
+
+        self.assertEqual(brkga._rng.getstate(), local_rng.getstate())
+
+        brkga._reset_phase = True
+        brkga.initialize()
+
+        # Create a local chromosome and applied the decoder on it.
+        local_chr = BaseChromosome([
+            local_rng.random() for _ in range(param_values["chromosome_size"])
+        ])
+        param_values["decoder"].decode(local_chr, rewrite=True)
+
+        self.assertEqual(brkga._current_populations[0].chromosomes[0],
+                         local_chr)
 
 ###############################################################################
 

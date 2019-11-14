@@ -6,7 +6,7 @@ test_algorithm_evolutionary_methods.py: Tests the evolutionary methods.
 This code is released under LICENSE.md.
 
 Created on:  Nov 08, 2019 by ceandrade
-Last update: Nov 08, 2019 by ceandrade
+Last update: Nov 13, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -29,10 +29,17 @@ import unittest
 from brkga_mp_ipr.algorithm import BrkgaMpIpr
 from brkga_mp_ipr.enums import *
 from brkga_mp_ipr.types import BaseChromosome, BrkgaParams
+from brkga_mp_ipr.types_io import load_configuration
+
+from tests.instance import Instance
+from tests.decoders import SumDecode, RankDecode
+from tests.paths_constants import *
+
+###############################################################################
 
 class Test(unittest.TestCase):
     """
-    Test units for types.
+    Test units for evolutionary methods.
     """
 
     ###########################################################################
@@ -43,6 +50,8 @@ class Test(unittest.TestCase):
         """
 
         Test.maxDiff = None
+
+        self.chromosome_size = 100
 
         self.default_brkga_params = BrkgaParams()
         self.default_brkga_params.population_size = 10
@@ -59,11 +68,15 @@ class Test(unittest.TestCase):
         self.default_brkga_params.alpha_block_size = 1.0
         self.default_brkga_params.pr_percentage = 1.0
 
+        self.instance = Instance(self.chromosome_size)
+        self.sum_decoder = SumDecode(self.instance)
+        self.rank_decoder = RankDecode(self.instance)
+
         self.default_param_values = {
-            "decoder": None,
+            "decoder": self.sum_decoder,
             "sense": Sense.MAXIMIZE,
-            "seed": 2700001,
-            "chromosome_size": 100,
+            "seed": 98747382473209,
+            "chromosome_size": self.chromosome_size,
             "params": self.default_brkga_params,
             "evolutionary_mechanism_on": True,
             "chrmosome_type": BaseChromosome

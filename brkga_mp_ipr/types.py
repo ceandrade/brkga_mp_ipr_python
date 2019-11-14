@@ -21,6 +21,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
+from __future__ import annotations
 import copy
 
 from brkga_mp_ipr.enums import BiasFunctionType, PathRelinkingType, \
@@ -159,7 +160,7 @@ class Population():
             Each pair represents the fitness and the chromosome index.
     """
 
-    def __init__(self, other_population=None):
+    def __init__(self, other_population: Population = None):
         """
         Initializes a new population. If ``other_population`` is not ``None``,
         we copy it.

@@ -6,7 +6,7 @@ test_types.py: Tests for types.
 This code is released under LICENSE.md.
 
 Created on:  Nov 06, 2019 by ceandrade
-Last update: Nov 09, 2019 by ceandrade
+Last update: Nov 13, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -116,8 +116,8 @@ class Test(unittest.TestCase):
         """
 
         pop1 = Population()
-        self.assertEqual(pop1.chromosomes, None)
-        self.assertEqual(pop1.fitness, None)
+        self.assertEqual(pop1.chromosomes, list())
+        self.assertEqual(pop1.fitness, list())
 
         pop1.chromosomes = [1, 2, 3]
         pop1.fitness = [(1, 10), (2, 20), (3, 30)]

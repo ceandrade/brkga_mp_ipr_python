@@ -28,11 +28,12 @@ class SumDecode():
     def __init__(self, instance: Instance):
         self.instance = instance
 
-    def decode(self, chromosome: BaseChromosome, rewrite: bool = False) -> float:
+    def decode(self, chromosome: BaseChromosome, rewrite: bool) -> float:
         tmp = [x + y for x, y in zip(chromosome, self.instance.data)]
-        tmp = [x / max(x) for x in tmp]
+        tmp = [x / max(tmp) for x in tmp]
         if rewrite:
-            chromosome = BaseChromosome(tmp)
+            for i in range(len(chromosome)):
+                chromosome[i] = tmp[i]
         return sum(tmp)
 
 ################################################################################
@@ -41,12 +42,13 @@ class RankDecode():
     def __init__(self, instance: Instance):
         self.instance = instance
 
-    def decode(self, chromosome: BaseChromosome, rewrite: bool = False) -> float:
+    def decode(self, chromosome: BaseChromosome, rewrite: bool) -> float:
         tmp = [x + y for x, y in zip(chromosome, self.instance.data)]
         rank = 0
         for i, value in enumerate(tmp[1:]):
             if value > tmp[i]:
                 rank += 1
         if rewrite:
-            chromosome = BaseChromosome(tmp)
+            for i in range(len(chromosome)):
+                chromosome[i] = tmp[i]
         return float(rank)
