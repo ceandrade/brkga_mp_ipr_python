@@ -100,7 +100,6 @@ class Test(unittest.TestCase):
         self.assertEqual(brkga.num_mutants, 1)
 
         brkga_params = param_values["params"]
-        self.assertEqual(len(brkga._shuffled_individuals), brkga_params.population_size)
         self.assertEqual(len(brkga._parents_ordered), brkga_params.total_parents)
 
         local_rng = Random(param_values["seed"])
