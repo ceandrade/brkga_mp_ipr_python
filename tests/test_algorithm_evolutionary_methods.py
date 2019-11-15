@@ -89,7 +89,7 @@ class Test(unittest.TestCase):
 
     ###########################################################################
 
-    def test_evolve_population(self):
+    def test_evolve_population0(self):
         """
         Tests evolve_population() method.
         """
@@ -154,13 +154,18 @@ class Test(unittest.TestCase):
         # end for
         print(f"Elapsed time: {time() - self.start_time :.2f}")
 
+    ###########################################################################
+
+    def test_evolve_population1(self):
+        """
+        Tests evolve_population() method.
+        """
         ########################
         # Test the evolutionary mechanism
         ########################
         # **NOTE:** this test may fail with the random number generation
         # changes. In such case, we have to figure out how to make this test
         # better.
-
         ########################
         # Data 1
 
@@ -186,6 +191,18 @@ class Test(unittest.TestCase):
         self.assertEqual(brkga.get_best_chromosome(), results["chromosome102"])
         print(f"Elapsed time: {time() - self.start_time :.2f}")
 
+    ###########################################################################
+
+    def test_evolve_population2(self):
+        """
+        Tests evolve_population() method.
+        """
+        ########################
+        # Test the evolutionary mechanism
+        ########################
+        # **NOTE:** this test may fail with the random number generation
+        # changes. In such case, we have to figure out how to make this test
+        # better.
         ########################
         # Data 2
 
@@ -212,6 +229,18 @@ class Test(unittest.TestCase):
         self.assertEqual(brkga.get_best_chromosome(), results["chromosome102"])
         print(f"Elapsed time: {time() - self.start_time :.2f}")
 
+    ###########################################################################
+
+    def test_evolve_population3(self):
+        """
+        Tests evolve_population() method.
+        """
+        ########################
+        # Test the evolutionary mechanism
+        ########################
+        # **NOTE:** this test may fail with the random number generation
+        # changes. In such case, we have to figure out how to make this test
+        # better.
         ########################
         # Data 3
 
@@ -240,6 +269,18 @@ class Test(unittest.TestCase):
         self.assertEqual(brkga.get_best_chromosome(), results["chromosome102"])
         print(f"Elapsed time: {time() - self.start_time :.2f}")
 
+    ###########################################################################
+
+    def test_evolve_population4(self):
+        """
+        Tests evolve_population() method.
+        """
+        ########################
+        # Test the evolutionary mechanism
+        ########################
+        # **NOTE:** this test may fail with the random number generation
+        # changes. In such case, we have to figure out how to make this test
+        # better.
         ########################
         # Data 4 (traditional BRKGA)
 
