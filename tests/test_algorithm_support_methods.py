@@ -6,7 +6,7 @@ test_algorithm_support_methods.py: Tests the support methods.
 This code is released under LICENSE.md.
 
 Created on:  Nov 08, 2019 by ceandrade
-Last update: Nov 13, 2019 by ceandrade
+Last update: Nov 14, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -370,6 +370,20 @@ class Test(unittest.TestCase):
 
         brkga.initialize()
 
+         # Test invalid population indices.
+        population_index = -1
+        with self.assertRaises(ValueError) as context:
+            brkga.evolve_population(population_index)
+        self.assertEqual(str(context.exception).strip(),
+                         "Population must be in [0, 2]: -1")
+
+        population_index = brkga.params.num_independent_populations
+        with self.assertRaises(ValueError) as context:
+            brkga.evolve_population(population_index)
+        self.assertEqual(str(context.exception).strip(),
+                         "Population must be in [0, 2]: 3")
+
+        # Test if it is returning the right population.
         for i in range(params.num_independent_populations):
             self.assertIs(brkga.get_current_population(i),
                           brkga._current_populations[i])

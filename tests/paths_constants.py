@@ -9,7 +9,7 @@ This module contains paths and constants for tests.
     AT&T Intellectual Property. All Rights Reserved.
 
 Created on  Nov 01, 2019 by andrade
-Modified on Nov 01, 2019 by andrade
+Modified on Nov 15, 2019 by andrade
 
 See LICENSE.md file for license information.
 
@@ -35,4 +35,5 @@ import pkg_resources
 
 RESOURCE_DIR = pkg_resources.resource_filename(__name__, "resources")
 CONFIG_DIR = os.path.join(RESOURCE_DIR, "configuration_files")
-# SOLUTION_DIR = os.path.join(RESOURCE_DIR, "solutions")
+STATE_DIR = os.path.join(RESOURCE_DIR, "states")
+SOLUTION_DIR = os.path.join(RESOURCE_DIR, "solutions")

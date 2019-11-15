@@ -6,7 +6,7 @@ algorithm.py: Definition of BRKGA-MP-API methods and algorithms.
 This code is released under LICENSE.md.
 
 Created on:  Nov 08, 2019 by ceandrade
-Last update: Nov 13, 2019 by ceandrade
+Last update: Nov 15, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -198,8 +198,8 @@ class BrkgaMpIpr:
         """(float) Holds the sum of the results of each raking given a bias
            function. This value is needed to normalization."""
 
-        self._shuffled_individuals = [0] * params.population_size
-        """Used to shuffled individual/chromosome indices during the mate."""
+        # self._shuffled_individuals = [0] * params.population_size
+        # """Used to shuffled individual/chromosome indices during the mate."""
 
         self._parents_ordered = [0] * params.total_parents
         """Defines the order of parents during the mating."""
@@ -408,6 +408,11 @@ class BrkgaMpIpr:
         # end for
 
         # Perform initial decoding. It may take a while.
+        # NOTE (ceandrade): This loop can be / should be parallelized since
+        # each decoding is independent. Please, take a look at the C++ and
+        # Julia versions, where we use OpenMP and Julia threads for that task.
+        # In Python, due to restrictions to the Python interpreter, this may
+        # not be possible, from a pure Python implementation perspective.
         for population in self._current_populations:
             for i, chromosome in enumerate(population.chromosomes):
                 value = self._decoder.decode(chromosome=chromosome,
@@ -500,8 +505,8 @@ class BrkgaMpIpr:
             raise RuntimeError("The algorithm hasn't been initialized. Call "
                                "'initialize()' before 'get_best_chromosome()'")
 
-        best_value = self._current_populations[0].fitness[0][0]
-        best_individual = None
+        best_value, idx = self._current_populations[0].fitness[0]
+        best_individual = self._current_populations[0].chromosomes[idx]
         for i in range(1, self.params.num_independent_populations):
             value, idx = self._current_populations[i].fitness[0]
             if (value < best_value) == (self.opt_sense == Sense.MINIMIZE):
@@ -562,6 +567,10 @@ class BrkgaMpIpr:
         """
         Returns a reference for population ``population_index``.
 
+        Warning:
+            IT IS NOT ADIVISED TO CHANGE THE POPULATION DIRECTLY, since such
+            changes can result in undefined behavior.
+
         Args:
             population_index (positive int): the index for the population.
 
@@ -590,8 +599,148 @@ class BrkgaMpIpr:
     # Optimization (evolutionary / Path-relink) methods
     ###########################################################################
 
-    def evolve(self, generations: int = 1) -> None:
-        raise NotImplementedError
+    def evolve(self, num_generations: int = 1) -> None:
+        """
+        Evolve all populations for ``generations``.
+
+        Args:
+            num_generations (positive int): the number of generations to be
+                evolved.
+
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before.
+
+            ``ValueError``: either if ``population_index < 0`` or
+                ``population_index >= num_independent_populations``.
+        """
+
+        if not self._initialized:
+            raise RuntimeError("The algorithm hasn't been initialized. "
+                                "Call 'initialize()' before "
+                                "'evolve()'")
+        if num_generations < 1:
+            raise ValueError(f"Number of generations must be large than one. "
+                             f"Given {num_generations}")
+
+        for _ in range(num_generations):
+            for pop_idx in range(self.params.num_independent_populations):
+                self.evolve_population(pop_idx)
+
+    ###########################################################################
+
+    def evolve_population(self, population_index: int) -> None:
+        """
+        Evolve the population ``population_index`` to the next generation.
+
+        Note:
+            Although this method allows us to evolve populations
+            independently, and therefore, provide nice flexibility, the
+            generation of each population can be unsyched. We must proceed
+            with care when using this function instead of ``evolve()``.
+
+        Args:
+            population_index (positive int): the index for the population to
+                be evolved.
+
+        Raises:
+            ``RuntimeError``: If the algorith has been initialized before.
+
+            ``ValueError``: either if ``population_index < 0`` or
+                ``population_index >= num_independent_populations``.
+        """
+
+        if not self._initialized:
+            raise RuntimeError("The algorithm hasn't been initialized. "
+                                "Call 'initialize()' before "
+                                "'evolve_population()'")
+
+        if population_index < 0 or \
+           population_index >= self.params.num_independent_populations:
+            raise ValueError(
+                f"Population must be in "
+                f"[0, {self.params.num_independent_populations - 1}]: "
+                f"{population_index}")
+
+        # Make names shorter.
+        curr_pop = self._current_populations[population_index]
+        next_pop = self._previous_populations[population_index]
+
+        # Which index we start to replace individuals.
+        replace_idx = self.params.population_size - self.num_mutants
+
+        # First, we copy the elite chromosomes to the next generation.
+        for i in range(self.elite_size):
+            next_pop.chromosomes[i][:] = curr_pop.chromosomes[i][:]
+            next_pop.fitness[i] = curr_pop.fitness[i]
+
+        # Then, we mate/crossover 'pop_size - elite_size - num_mutants' pairs.
+        for chr_idx in range(self.elite_size, replace_idx):
+            # First, we shuffled the elite set and non-elite set indices,
+            # then we take the elite and non-elite parents. Note that we cannot
+            # shuffled both sets together, otherwise we would mix elite
+            # and non-elite individuals.
+            elite_indices = list(range(self.elite_size))
+            self._rng.shuffle(elite_indices)
+            non_elite_indices = list(range(self.elite_size, replace_idx))
+            self._rng.shuffle(non_elite_indices)
+            shuffled_individuals = elite_indices + non_elite_indices
+
+            # Take the elite parents.
+            for i in range(self.params.num_elite_parents):
+                self._parents_ordered[i] = \
+                    curr_pop.fitness[shuffled_individuals[i]]
+
+            # Take the non-elite parents.
+            for i in range(self.params.total_parents -
+                           self.params.num_elite_parents):
+                self._parents_ordered[i + self.params.num_elite_parents] = \
+                    curr_pop.fitness[shuffled_individuals[i + self.elite_size]]
+
+            self._parents_ordered.sort(reverse=(self.opt_sense ==
+                                                Sense.MAXIMIZE))
+
+            # Performs the mate.
+            for allele in range(self.chromosome_size):
+                # Roullete method.
+                parent = 0
+                cumulative_probability = 0.0
+                toss = self._rng.random()
+                while cumulative_probability < toss:
+                    # Start parent from 1 because the bias function.
+                    parent += 1
+                    cumulative_probability += \
+                        self._bias_function(parent) / self._total_bias_weight
+
+                # Decrement parent to the right index.
+                parent -= 1
+                next_pop.chromosomes[chr_idx][allele] = curr_pop\
+                    .chromosomes[self._parents_ordered[parent][1]][allele]
+            # end for mate.
+        # end for crossover.
+
+        # To finish, we fill up the remaining spots with mutants.
+        for chr_idx in range(self.params.population_size - self.num_mutants,
+                             self.params.population_size):
+            self.fill_chromosome(next_pop.chromosomes[chr_idx])
+
+        # Perform the decoding on the offpring and mutants.
+        # NOTE (ceandrade): This loop can be / should be parallelized since
+        # each decoding is independent. Please, take a look at the C++ and
+        # Julia versions, where we use OpenMP and Julia threads for that task.
+        # In Python, due to restrictions to the Python interpreter, this may
+        # not be possible, from a pure Python implementation perspective.
+        for i in range(self.elite_size, self.params.population_size):
+            value = self._decoder.decode(chromosome=next_pop.chromosomes[i],
+                                         rewrite=True)
+            next_pop.fitness[i] = (value, i)
+
+        next_pop.fitness.sort(reverse=(self.opt_sense == Sense.MAXIMIZE))
+
+        # Swap populations.
+        self._previous_populations[population_index], \
+        self._current_populations[population_index] = \
+            self._current_populations[population_index], \
+            self._previous_populations[population_index]
 
     ###########################################################################
 
@@ -608,11 +757,12 @@ class BrkgaMpIpr:
 
     def generate_chromosome(self, chromosome_size: int) -> BaseChromosome:
         """
-        Generates a new chromosome with the given size. The new chromosome
-        is an object of class ``self._ChromosomeType``, given in the
-        constructor. If the chromosome type is not given in the constructor,
-        BaseChromosome is used instead. Please, see the documentation of both
-        the BaseChromosome and the constructor for more details.
+        Generates a new chromosome with the given size. The new chromosome is
+        an object of class ``self._ChromosomeType`` (which should be a
+        ``BaseChromosome`` derivative), given in the constructor. If the
+        chromosome type is not given in the constructor, ``BaseChromosome`` is
+        used instead. Please, see the documentation of both the
+        ``BaseChromosome`` and the constructor for more details.
 
         Args:
             chromosome_size (positive int): The size of the chromosome.
@@ -633,15 +783,6 @@ class BrkgaMpIpr:
         """
         for i in range(len(chromosome)):
             chromosome[i] = self._rng.random()
-
-    ###########################################################################
-    # Core internal/private evolutionary methods
-    ###########################################################################
-
-    # TODO: fix the argments' type
-    # def _evolution(curr: Population, next:Population) -> None
-    def _evolution(self, curr, next) -> None:
-        raise NotImplementedError
 
     ###########################################################################
     # Core internal/private path-relink methods

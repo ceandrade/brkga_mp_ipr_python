@@ -6,7 +6,7 @@ test_algorithm_evolutionary_methods.py: Tests the evolutionary methods.
 This code is released under LICENSE.md.
 
 Created on:  Nov 08, 2019 by ceandrade
-Last update: Nov 13, 2019 by ceandrade
+Last update: Nov 15, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -22,8 +22,10 @@ POSSIBILITY OF SUCH DAMAGE.
 """
 
 from copy import deepcopy
-import math
 from random import Random
+from time import time
+import dill as pickle
+import math
 import unittest
 
 from brkga_mp_ipr.algorithm import BrkgaMpIpr
@@ -50,6 +52,9 @@ class Test(unittest.TestCase):
         """
 
         Test.maxDiff = None
+
+        # For travis-ci output.
+        self.start_time = time()
 
         self.chromosome_size = 100
 
@@ -84,14 +89,188 @@ class Test(unittest.TestCase):
 
     ###########################################################################
 
-    def test__evolution(self):
+    def test_evolve_population(self):
         """
-        Tests _evolution() method.
+        Tests evolve_population() method.
         """
 
         param_values = deepcopy(self.default_param_values)
+        brkga_params = param_values["params"]
+        brkga_params.num_independent_populations = 3
+        brkga_params.num_elite_parents = 1
+        brkga_params.total_parents = 2
         brkga = BrkgaMpIpr(**param_values)
-        self.assertRaises(NotImplementedError, brkga._evolution, None, None)
+
+        # Not initialized
+        with self.assertRaises(RuntimeError) as context:
+            brkga.evolve_population(0)
+        self.assertEqual(str(context.exception).strip(),
+                         "The algorithm hasn't been initialized. "
+                         "Call 'initialize()' before 'evolve_population()'")
+
+        brkga.initialize()
+
+         # Test invalid population indices.
+        population_index = -1
+        with self.assertRaises(ValueError) as context:
+            brkga.evolve_population(population_index)
+        self.assertEqual(str(context.exception).strip(),
+                         "Population must be in [0, 2]: -1")
+
+        population_index = brkga.params.num_independent_populations
+        with self.assertRaises(ValueError) as context:
+            brkga.evolve_population(population_index)
+        self.assertEqual(str(context.exception).strip(),
+                         "Population must be in [0, 2]: 3")
+
+        # Save previous and current populations locally
+        current = deepcopy(brkga._current_populations)
+        previous = deepcopy(brkga._previous_populations)
+
+        ########################
+        # Test if algorithm swaps the populations correctly
+        ########################
+
+        for i in range(brkga_params.num_independent_populations):
+            brkga.evolve_population(i)
+
+            # Internal current and previous generation must be different.
+            self.assertNotEqual(brkga._current_populations[i].chromosomes,
+                                brkga._previous_populations[i].chromosomes)
+
+            # The current the from this generation is equal to the previous
+            # of the next generation.
+            self.assertEqual(current[i].chromosomes,
+                             brkga._previous_populations[i].chromosomes)
+            self.assertEqual(current[i].fitness,
+                             brkga._previous_populations[i].fitness)
+
+            # The previous of this generation is lost. Just make sure that
+            # the internal swap gets the new generation, not the current one.
+            self.assertNotEqual(previous[i].chromosomes,
+                                brkga._current_populations[i].chromosomes)
+            self.assertNotEqual(previous[i].fitness,
+                                brkga._current_populations[i].fitness)
+        # end for
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        ########################
+        # Test the evolutionary mechanism
+        ########################
+        # **NOTE:** this test may fail with the random number generation
+        # changes. In such case, we have to figure out how to make this test
+        # better.
+
+        ########################
+        # Data 1
+
+        with open(os.path.join(STATE_DIR, "state1.pickle"), "rb") as hd:
+            brkga = pickle.load(hd)
+
+        with open(os.path.join(SOLUTION_DIR, "best_solution1.pickle"), "rb") as hd:
+            results = pickle.load(hd)
+
+        brkga.evolve_population(0)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness1"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome1"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        brkga.evolve_population(0)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness2"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome2"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        for _ in range(100):
+            brkga.evolve_population(0)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness102"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome102"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        ########################
+        # Data 2
+
+        with open(os.path.join(STATE_DIR, "state2.pickle"), "rb") as hd:
+            brkga = pickle.load(hd)
+
+        with open(os.path.join(SOLUTION_DIR, "best_solution2.pickle"), "rb") as hd:
+            results = pickle.load(hd)
+
+        brkga.evolve_population(0)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness1"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome1"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        brkga.evolve_population(1)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness2"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome2"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        for _ in range(100):
+            brkga.evolve_population(0)
+            brkga.evolve_population(1)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness102"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome102"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        ########################
+        # Data 3
+
+        with open(os.path.join(STATE_DIR, "state3.pickle"), "rb") as hd:
+            brkga = pickle.load(hd)
+
+        with open(os.path.join(SOLUTION_DIR, "best_solution3.pickle"), "rb") as hd:
+            results = pickle.load(hd)
+
+        for i in range(brkga.params.num_independent_populations):
+            brkga.evolve_population(i)
+
+        self.assertEqual(brkga.get_best_fitness(), results["fitness1"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome1"])
+
+        for i in range(brkga.params.num_independent_populations):
+            brkga.evolve_population(i)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness2"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome2"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        for _ in range(100):
+            for i in range(brkga.params.num_independent_populations):
+                brkga.evolve_population(i)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness102"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome102"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        ########################
+        # Data 4 (traditional BRKGA)
+
+        with open(os.path.join(STATE_DIR, "state4.pickle"), "rb") as hd:
+            brkga = pickle.load(hd)
+
+        with open(os.path.join(SOLUTION_DIR, "best_solution4.pickle"), "rb") as hd:
+            results = pickle.load(hd)
+
+        brkga.evolve_population(0)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness1"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome1"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        brkga.evolve_population(1)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness2"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome2"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        brkga.evolve_population(2)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness3"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome3"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        for _ in range(100):
+            brkga.evolve_population(0)
+            brkga.evolve_population(1)
+            brkga.evolve_population(2)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness103"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome103"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
 
     ###########################################################################
 
@@ -101,9 +280,44 @@ class Test(unittest.TestCase):
         """
 
         param_values = deepcopy(self.default_param_values)
+        brkga_params = param_values["params"]
         brkga = BrkgaMpIpr(**param_values)
-        self.assertRaises(NotImplementedError, brkga.evolve, 0)
 
+        # Not initialized
+        with self.assertRaises(RuntimeError) as context:
+            brkga.evolve()
+        self.assertEqual(str(context.exception).strip(),
+                         "The algorithm hasn't been initialized. "
+                         "Call 'initialize()' before 'evolve()'")
+
+        brkga.initialize()
+
+        with self.assertRaises(ValueError) as context:
+            brkga.evolve(-1)
+        self.assertEqual(str(context.exception).strip(),
+                         "Number of generations must be large than one. "
+                         "Given -1")
+
+        with open(os.path.join(STATE_DIR, "state5.pickle"), "rb") as hd:
+            brkga = pickle.load(hd)
+
+        with open(os.path.join(SOLUTION_DIR, "best_solution5.pickle"), "rb") as hd:
+            results = pickle.load(hd)
+
+        brkga.evolve()
+        self.assertEqual(brkga.get_best_fitness(), results["fitness1"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome1"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        brkga.evolve(10)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness10"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome10"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
+
+        brkga.evolve(100)
+        self.assertEqual(brkga.get_best_fitness(), results["fitness100"])
+        self.assertEqual(brkga.get_best_chromosome(), results["chromosome100"])
+        print(f"Elapsed time: {time() - self.start_time :.2f}")
 
 ###############################################################################
 
