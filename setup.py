@@ -6,7 +6,7 @@ setup.py: Configurations for install and setup BRKGA-MP-IPR.
 This code is released under LICENSE.md.
 
 Created on:  Nov 15, 2019 by ceandrade
-Last update: Nov 15, 2019 by ceandrade
+Last update: Nov 18, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -23,11 +23,19 @@ POSSIBILITY OF SUCH DAMAGE.
 
 import setuptools
 
+test_deps = [
+    "dill>=0.3.1.1",
+    "pytest"
+]
+extras = {
+    'test': test_deps,
+}
+
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="BRKGA-MP-IPR", # Replace with your own username
+    name="brkga_mp_ipr",
     version="0.9",
     author="Carlos Eduardo de Andrade",
     author_email="ce.andrade@gmail.com",
@@ -37,12 +45,15 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/ceandrade/brkga_mp_ipr_python",
     packages=setuptools.find_packages(),
-    # classifiers=[
-    #     "Programming Language :: Python :: 3",
-    #     "License :: OSI Approved :: MIT License",
-    #     "Operating System :: OS Independent",
-    # ],
+    classifiers=[
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Operations Research",
+        "Topic :: Optimization :: Genetic Algorithms",
+        "Programming Language :: Python :: 3.7",
+        "Operating System :: OS Independent",
+        "License :: Custom BSD License",
+    ],
     python_requires='>=3.7',
+    tests_require=test_deps,
+    extras_require=extras,
 )
-
-print(setuptools.find_packages())

@@ -472,7 +472,7 @@ class BrkgaMpIpr:
 
     def get_best_fitness(self) -> float:
         """
-        Return the fitness/value of the best individual found so far among
+        Returns the fitness/value of the best individual found so far among
         all populations.
 
         Raises:
@@ -494,7 +494,7 @@ class BrkgaMpIpr:
 
     def get_best_chromosome(self) -> BaseChromosome:
         """
-        Return a deep copy of the best individual found so far among all
+        Returns a deep copy of the best individual found so far among all
         populations.
 
         Raises:
@@ -601,7 +601,7 @@ class BrkgaMpIpr:
 
     def evolve(self, num_generations: int = 1) -> None:
         """
-        Evolve all populations for ``generations``.
+        Evolves all populations for ``generations``.
 
         Args:
             num_generations (positive int): the number of generations to be
@@ -630,7 +630,7 @@ class BrkgaMpIpr:
 
     def evolve_population(self, population_index: int) -> None:
         """
-        Evolve the population ``population_index`` to the next generation.
+        Evolves the population ``population_index`` to the next generation.
 
         Note:
             Although this method allows us to evolve populations

@@ -16,14 +16,23 @@ we can setup, run, and extract the value of the best solution in less than
 5 commands (obvisiously, you may need few other lines fo code to do a proper
 test).
 
-If Python is not suitable to you, we may find useful the 
-[C++ version](https://github.com/ceandrade/brkga_mp_ipr_cpp) or
-[Julia version](https://github.com/ceandrade/brkga_mp_ipr_julia) of this framework. 
-At this moment, we have no plans to implement the BRKGA-MP-IPR in other
-languages such as Java or C#. But if you want to do so, you are
-must welcome. But please, keep the API as close as possible to the C++ API
-(or Julia API in case you decide go C), and use the best coding and
-documentation practices of your chosen language/framework.
+This Python version is very flexible and suitable for prototyping. However,
+it is not as fast as the
+[C++ version](https://github.com/ceandrade/brkga_mp_ipr_cpp) or the
+[Julia version](https://github.com/ceandrade/brkga_mp_ipr_julia).
+Moreover, due to Python Interpreter limitations (see
+(https://wiki.python.org/moin/GlobalInterpreterLock)), real multithread is
+not possible, defeating the BRKGA's capability of parallel decoding, which
+speeds up the optimization by large paces.
+
+If Python is not suitable to you, we may find useful the
+[C++ version](https://github.com/ceandrade/brkga_mp_ipr_cpp) or the
+[Julia version](https://github.com/ceandrade/brkga_mp_ipr_julia) of this
+framework. At this moment, we have no plans to implement the BRKGA-MP-IPR in
+other languages such as Java or C#. But if you want to do so, you are must
+welcome. But please, keep the API as close as possible to the C++ API (or
+Julia API in case you decide go C), and use the best coding and documentation
+practices of your chosen language/framework.
 
 If you are not familiar with how BRKGA works, take a look on
 [Standard BRKGA](http://dx.doi.org/10.1007/s10732-010-9143-1) and
@@ -31,11 +40,13 @@ If you are not familiar with how BRKGA works, take a look on
 In the future, we will provide a _Prime on BRKGA-MP_
 section.
 
-Tutorial
+Tutorial (complete)
 --------------------------------------------------------------------------------
 
-Check out the tutorial and documentation:
-(https://ceandrade.github.io/brkga_mp_ipr_python)
+The tutorial is a working-in-progress yet. Meanwhile, the reader can use
+the [C++ tutorial](https://ceandrade.github.io/brkga_mp_ipr_cpp) or
+the [Julia tutorial](https://ceandrade.github.io/brkga_mp_ipr_julia)
+since the APIs are very similar each other.
 
 License and Citing
 --------------------------------------------------------------------------------
