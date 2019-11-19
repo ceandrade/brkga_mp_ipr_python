@@ -21,7 +21,7 @@ it is not as fast as the
 [C++ version](https://github.com/ceandrade/brkga_mp_ipr_cpp) or the
 [Julia version](https://github.com/ceandrade/brkga_mp_ipr_julia).
 Moreover, due to Python Interpreter limitations (see
-(https://wiki.python.org/moin/GlobalInterpreterLock)), real multithread is
+https://wiki.python.org/moin/GlobalInterpreterLock), real multithread is
 not possible, defeating the BRKGA's capability of parallel decoding, which
 speeds up the optimization by large paces.
 
@@ -39,6 +39,123 @@ If you are not familiar with how BRKGA works, take a look on
 [Multi-Parent BRKGA](http://dx.doi.org/xxx).
 In the future, we will provide a _Prime on BRKGA-MP_
 section.
+
+Dependencies
+--------------------------------------------------------------------------------
+
+BRKGA-MP-IPR was developed using Python 3.7, especially using the new `enum`
+capabilities. The parameters' loading and writing functions may fail on
+Python 3.6 or previous versions. However, the main algorithm functions work
+fine on Python 3.6, by providing BrkgaParams manually (or implementing your
+own parameter loading).
+
+Install
+--------------------------------------------------------------------------------
+
+TODO
+
+Short usage (TL;DR)
+--------------------------------------------------------------------------------
+
+The best way to keep it short is to look in the
+[`examples`](https://github.com/ceandrade/brkga_mp_ipr_python/tree/master/examples/tsp) folder
+on [the git repo.](https://github.com/ceandrade/brkga_mp_ipr_python)
+Let's take a look into
+[`main_minimal.py`](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/examples/tsp/main_minimal.py),
+copied (and trimmed) below:
+
+```python
+import sys
+
+from brkga_mp_ipr.enums import Sense
+from brkga_mp_ipr.types_io import load_configuration
+from brkga_mp_ipr.algorithm import BrkgaMpIpr
+
+from tsp_instance import TSPInstance
+from tsp_decoder import TSPDecoder
+
+def main() -> None:
+    if len(sys.argv) < 4:
+        print("Usage: python main_minimal.py <seed> <config-file> "
+              "<num-generations> <tsp-instance-file>")
+        sys.exit(1)
+
+    seed = int(sys.argv[1])
+    configuration_file = sys.argv[2]
+    num_generations = int(sys.argv[3])
+    instance_file = sys.argv[4]
+
+    instance = TSPInstance(instance_file)
+
+    decoder = TSPDecoder(instance)
+
+    brkga_params, _ = load_configuration(configuration_file)
+
+    brkga = BrkgaMpIpr(
+        decoder=decoder,
+        sense=Sense.MINIMIZE,
+        seed=seed,
+        chromosome_size=instance.num_nodes,
+        params=brkga_params
+    )
+
+    brkga.initialize()
+
+    brkga.evolve(num_generations)
+
+    best_cost = brkga.get_best_fitness()
+    print(f"Best cost: {best_cost}")
+
+if __name__ == "__main__":
+    main()
+```
+
+You can identify the following basic steps:
+
+1. Create a data structure to hold your input data which is passed to the
+   decoder function (example
+   [`tsp_instance.py`](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/examples/tsp/tsp_instance.py)).
+   Note that you may not implement a data/instance class but load all needed
+   information directly on your decoder;
+
+2. Create a decoder class. The `decode()` method from this class
+   translates a chromosome (array of numbers in the interval [0, 1]) to a
+   solution for your problem. The decoder must return the solution value or cost
+   to be used as fitness by BRKGA (example
+   [`tsp_decoder.py`](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/examples/tsp/tsp_decoder.py)).
+   Note that the `decode()` method must have the following signature:
+
+   ```python
+   def decode(self, chromosome: BaseChromosome, rewrite: bool) -> float
+   ```
+
+   where `BaseChromosome` is a class inhereted from ``list``. In other words,
+   you can tread ``chromosome`` as a simple list of floats;
+
+3. Load the instance and other relevant data, and instantiate the decoder;
+
+4. Read the algorithm parameters using ``load_configuration()`` or create
+   a BrkgaParams object by hand;
+
+5. Create a ``BrkgaMpIpr`` algorithm object;
+
+6. Call `initialize()` to init the BRKGA state;
+
+7. Call `evolve()` to optimize;
+
+8. Call `get_best_fitness()` and/or `get_best_chromosome()` to
+   retrieve the best solution.
+
+[`main_minimal.py`](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/examples/tsp/main_minimal.py)
+provides a very minimal example to understand the necessary steps to use the
+BRKGA-MP-IPR framework. However,
+[`main_complete.py`](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/examples/tsp/main_complete.py)
+provides a full-featured code, handy for scientific use, such as
+experimentation and paper writing. This code allows fine-grained control of
+the optimization, shows several features of BRKGA-MP-IPR such as the resets,
+chromosome injection, and others. It also logs
+all optimization steps, _creating outputs easy to be parsed._ **You should use
+this code for serious business and experimentation.**
 
 Tutorial (complete)
 --------------------------------------------------------------------------------
