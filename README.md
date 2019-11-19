@@ -64,7 +64,8 @@ The best way to keep it short is to look in the
 on [the git repo.](https://github.com/ceandrade/brkga_mp_ipr_python)
 Let's take a look into
 [`main_minimal.py`](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/examples/tsp/main_minimal.py),
-which solves the Traveling Salesman Problem (TSP).
+which solves the
+[Traveling Salesman Problem (TSP)](https://en.wikipedia.org/wiki/Travelling_salesman_problem).
 This is a trimmed copy:
 
 ```python
@@ -160,7 +161,7 @@ chromosome injection, and others. It also logs
 all optimization steps, _creating outputs easy to be parsed._ **You should use
 this code for serious business and experimentation.**
 
-Tutorial (complete)
+Tutorial and full documentation
 --------------------------------------------------------------------------------
 
 The tutorial is a working-in-progress yet. Meanwhile, the reader can use
@@ -182,6 +183,8 @@ test it must cite explicitly the following article":
 > Biased Random-key Genetic Algorithm with Implicit Path Relinking. _European
 > Journal of Operational Research_, volume XX, issue X, pages xx-xx, 2019.
 > DOI [to be determined](http://dx.doi.org/xxx)
+
+[Check it out the full license.](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/LICENSE.md)
 
 Contributing
 --------------------------------------------------------------------------------
