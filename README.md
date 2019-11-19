@@ -64,7 +64,8 @@ The best way to keep it short is to look in the
 on [the git repo.](https://github.com/ceandrade/brkga_mp_ipr_python)
 Let's take a look into
 [`main_minimal.py`](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/examples/tsp/main_minimal.py),
-copied (and trimmed) below:
+which solves the Traveling Salesman Problem (TSP).
+This is a trimmed copy:
 
 ```python
 import sys
