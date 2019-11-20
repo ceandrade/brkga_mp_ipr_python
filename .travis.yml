@@ -47,4 +47,4 @@ jobs:
 
 # install: pip3 install --upgrade pip ; pip3 install tox tox-travis
 install: pip3 install pytest tox tox-travis
-script: pwd ; tox
+script: tox-travis
