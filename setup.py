@@ -6,7 +6,7 @@ setup.py: Configurations for install and setup BRKGA-MP-IPR.
 This code is released under LICENSE.md.
 
 Created on:  Nov 15, 2019 by ceandrade
-Last update: Nov 18, 2019 by ceandrade
+Last update: Nov 20, 2019 by ceandrade
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -53,7 +53,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
         "License :: Custom BSD License",
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.7.2',
     tests_require=test_deps,
     extras_require=extras,
 )
