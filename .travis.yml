@@ -4,9 +4,9 @@ language: python
   #- linux
   #- osx
 
-python:
-  - 3.7.2
-  - 3.7.5
+# python:
+#   - 3.7.2
+#   - 3.7.5
 
 notifications:
   email: false
@@ -20,7 +20,9 @@ notifications:
 jobs:
   include:
     # - name: "Python Linux"
-    #   python: 3.7.2           # this works for Linux but is ignored on macOS or Windows
+    #   python:
+    #     - 3.7.2
+    #     - 3.7.5
     #   before_install:
     #     - pip3 install --upgrade pip
     #   # install:
@@ -33,8 +35,6 @@ jobs:
       before_install:
         - brew update
         - pip3 install --upgrade pip
-      # install:
-      #   - pip3 install pytest tox tox-travis
 
     # - name: "Python on Windows"
     #   os: windows           # Windows 10.0.17134 N/A Build 17134
@@ -45,5 +45,5 @@ jobs:
     #   env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 # install: pip3 install --upgrade pip ; pip3 install tox tox-travis
-install: pip3 install pytest tox
+install: pip3 install pytest tox tox-travis
 script: pwd ; tox
