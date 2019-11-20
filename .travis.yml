@@ -42,7 +42,6 @@ jobs:
       before_install:
         - choco install python --version 3.7.2
         - python -m pip install --upgrade pip
-        - echo %cd%
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 # install: pip3 install --upgrade pip ; pip3 install tox tox-travis
