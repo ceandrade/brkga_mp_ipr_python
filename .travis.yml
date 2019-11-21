@@ -17,6 +17,9 @@ notifications:
 install: pip3 install --upgrade pip ; pip3 install pytest tox tox-travis
 script: tox
 
+# TODO (ceandrade): fix this thing. Make it work in both Linux, Mac OSX, and
+# Windows. Note that in the code below, tox does not appear to call pytest
+# on OSX and Windows.
 # language: python
 # notifications:
 #   email: false
@@ -43,5 +46,5 @@ script: tox
 #         - python -m pip install --upgrade pip
 #       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
-# install: pip3 install --upgrade pip ; pip3 install tox tox-travis
+# install: pip3 install --upgrade pip ; pip3 install dill pytest tox tox-travis
 # script: tox

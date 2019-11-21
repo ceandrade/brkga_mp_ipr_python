@@ -19,13 +19,13 @@ met:
    without specific prior written permission.
 
 4. All publications, softwares, or any other materials mentioning features or
-   use of this software and/or the data used to test it
-   must cite explicitly the following article:
+   use of this software (as a whole package or any parts of it) and/or the data
+   used to test it must cite the following article explicitly:
 
-> C.E. Andrade. The Multi-Parent Biased Random-key Genetic Algorithm with
-> Implicit Path Relinking. European Jornal of Operational Research, volume XX,
-> issue X, pages xx-xx, 2019. DOI
-> [to be determined](http://dx.doi.org/xxx)
+> C.E. Andrade. R.F. Toso, J.F. Gonçalves, M.G.C. Resende. The Multi-Parent
+> Biased Random-key Genetic Algorithm with Implicit Path Relinking. _European
+> Jornal of Operational Research_, volume XX, issue X, pages xx-xx, 2019.
+> DOI [to be determined](http://dx.doi.org/xxx)
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
 ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED

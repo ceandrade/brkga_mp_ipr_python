@@ -5,11 +5,48 @@
 BRKGA-MP-IPR - Python version
 ================================================================================
 
-[![Build Status](https://travis-ci.org/ceandrade/brkga_mp_ipr_python.svg?branch=master)](https://travis-ci.org/ceandrade/brkga_mp_ipr_python)
-
-[![Coverage Status](https://coveralls.io/repos/ceandrade/brkga_mp_ipr_python/badge.svg?branch=master&service=github)](https://coveralls.io/github/ceandrade/brkga_mp_ipr_python?branch=master)
-
-[![codecov.io](http://codecov.io/github/ceandrade/brkga_mp_ipr_python/coverage.svg?branch=master)](http://codecov.io/github/ceandrade/brkga_mp_ipr_python?branch=master)
+<table>
+<tr>
+  <td>Build Status</td>
+  <td>
+    <a href="https://travis-ci.org/ceandrade/brkga_mp_ipr_python">
+    <img src="https://travis-ci.org/ceandrade/brkga_mp_ipr_python.svg?branch=master" alt="Build Status" />
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>Coverage Status</td>
+  <td>
+    <a href="https://coveralls.io/github/ceandrade/brkga_mp_ipr_python?branch=master">
+    <img src="https://coveralls.io/repos/ceandrade/brkga_mp_ipr_python/badge.svg?branch=master&service=github" alt="Coverage Status" />
+    </a>
+  </td>
+</tr>
+<tr>
+  <td>codecov.io</td>
+  <td>
+    <a href="http://codecov.io/github/ceandrade/brkga_mp_ipr_python?branch=master">
+    <img src="http://codecov.io/github/ceandrade/brkga_mp_ipr_python/coverage.svg?branch=master" alt="codecov.io" />
+    </a>
+  </td>
+</tr>
+<!-- <tr>
+  <td>Documentation</td>
+  <td>
+    <a href="https://ceandrade.github.io/brkga_mp_ipr_python">
+    <img src="https://img.shields.io/badge/api-reference-blue.svg" alt="Documentation" />
+    </a>
+  </td>
+</tr> -->
+<tr>
+  <td>License</td>
+  <td>
+    <a href="https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/LICENSE.md">
+    <img src="https://img.shields.io/badge/license-BSD--like-blue" alt="License" />
+    </a>
+  </td>
+</tr>
+</table>
 
 BRKGA-MP-IPR provides a _very easy-to-use_ framework for the
 Multi-Parent Biased Random-Key Genetic Algorithm with Implict Path Relink
@@ -20,8 +57,8 @@ test).
 
 This Python version is very flexible and suitable for prototyping. However,
 it is not as fast as the
-[C++ version](https://github.com/ceandrade/brkga_mp_ipr_cpp) or the
-[Julia version](https://github.com/ceandrade/brkga_mp_ipr_julia).
+[**C++ version**](https://github.com/ceandrade/brkga_mp_ipr_cpp) or the
+[**Julia version**](https://github.com/ceandrade/brkga_mp_ipr_julia).
 Moreover, due to Python Interpreter limitations (see
 https://wiki.python.org/moin/GlobalInterpreterLock), real multithread is
 not possible, defeating the BRKGA's capability of parallel decoding, which
@@ -36,27 +73,50 @@ welcome. But please, keep the API as close as possible to the C++ API (or
 Julia API in case you decide go C), and use the best coding and documentation
 practices of your chosen language/framework.
 
+- [**C++ version**](https://github.com/ceandrade/brkga_mp_ipr_cpp)
+- [**Julia version**](https://github.com/ceandrade/brkga_mp_ipr_julia)
+
 If you are not familiar with how BRKGA works, take a look on
 [Standard BRKGA](http://dx.doi.org/10.1007/s10732-010-9143-1) and
 [Multi-Parent BRKGA](http://dx.doi.org/xxx).
 In the future, we will provide a _Prime on BRKGA-MP_
 section.
 
-Dependencies
+:computer: Installation and tests
 --------------------------------------------------------------------------------
 
-BRKGA-MP-IPR was developed using Python 3.7, especially using the new `enum`
-capabilities. The parameters' loading and writing functions may fail on
-Python 3.6 or previous versions. However, the main algorithm functions work
-fine on Python 3.6, by providing BrkgaParams manually (or implementing your
-own parameter loading).
+BRKGA-MP-IPR was developed using >= Python 3.7.2, especially using the new
+`enum` capabilities. The parameters' loading and writing functions may fail
+on Python 3.6 or previous versions. However, the main algorithm functions
+work fine on Python 3.6, by providing BrkgaParams manually (or implementing
+your own parameter loading).
 
-Install
---------------------------------------------------------------------------------
+TODO: actual installation.
 
-TODO
+BRKGA-MP-IPR also provides a thorough unit testing that aims to harden and make
+the code ready for production environments.
+You can use builtin
+[unittest](https://docs.python.org/3.7/library/unittest.html),
+or yet [pytest](https://www.pytest.org)
+or [Tox](https://tox.readthedocs.io).
 
-Short usage (TL;DR)
+> :information_source: **NOTE:**
+    The tests take about 10 minutes, mainly because the permutation path relink.
+
+> :warning: **Warning**:
+    It is a hard test to test algorithms that use random signals. In
+    BRKGA-MP-IPR, the tests are carefully designed to ensure repeatability. For
+    that, we use the Mersenne Twister
+    [[1]](https://en.wikipedia.org/wiki/Mersenne_Twister)
+    [[2]](http://dx.doi.org/10.1145/272991.272995) as our standard random
+    generator number engine, particularly the [version that comes with
+    Python 3.7](https://docs.python.org/3.7/library/random.html).
+    However, it may happen that such engine has slightly different
+    implementations across platforms and, therefore, the tests may fail. The
+    current version was tested on 64-bit platforms (Mac OS X, GNU/Linux, and
+    Windows 10).
+
+:zap: Short usage (TL;DR)
 --------------------------------------------------------------------------------
 
 The best way to keep it short is to look in the
@@ -161,7 +221,7 @@ chromosome injection, and others. It also logs
 all optimization steps, _creating outputs easy to be parsed._ **You should use
 this code for serious business and experimentation.**
 
-Tutorial and full documentation
+:books: Tutorial and full documentation
 --------------------------------------------------------------------------------
 
 The tutorial is a working-in-progress yet. Meanwhile, the reader can use
@@ -169,24 +229,44 @@ the [C++ tutorial](https://ceandrade.github.io/brkga_mp_ipr_cpp) or
 the [Julia tutorial](https://ceandrade.github.io/brkga_mp_ipr_julia)
 since the APIs are very similar each other.
 
-License and Citing
+:black_nib: License and Citing
 --------------------------------------------------------------------------------
 
 BRKGA-MP-IPR uses a permissive BSD-like license and it can be used as it
 pleases you. And since this framework is also part of an academic effort, we
 kindly ask you to remember to cite the originating paper of this work.
 Indeed, Clause 4 estipulates that "all publications, softwares, or any other
-materials mentioning features or use of this software and/or the data used to
-test it must cite explicitly the following article":
+materials mentioning features or use of this software (as a whole package or
+any parts of it) and/or the data used to test it must cite the following
+article explicitly:":
 
 > C.E. Andrade. R.F. Toso, J.F. Gonçalves, M.G.C. Resende. The Multi-Parent
 > Biased Random-key Genetic Algorithm with Implicit Path Relinking. _European
-> Journal of Operational Research_, volume XX, issue X, pages xx-xx, 2019.
+> Jornal of Operational Research_, volume XX, issue X, pages xx-xx, 2019.
 > DOI [to be determined](http://dx.doi.org/xxx)
 
-[Check it out the full license.](https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/LICENSE.md)
+[Check it out the full license.](https://github.com/ceandrade/brkga_mp_ipr_julia/blob/master/LICENSE.md)
 
-Contributing
+:construction_worker: TODO
+--------------------------------------------------------------------------------
+
+Coding side:
+
+- Implement the remaining population manipulation methods and tests
+  (short term);
+
+- Implement the path relinking methods and tests (long term).
+
+CI and tests side:
+
+- Configure Travis-Ci correctly, such that we can run tests on Mac OSX and
+  Windows too.
+
+Documentation side:
+
+- Create a comprehensive tutorial as we did for C++ and Julia versions.
+
+:pencil2: Contributing
 --------------------------------------------------------------------------------
 
 [Contribution guidelines for this project](CONTRIBUTING.md)
