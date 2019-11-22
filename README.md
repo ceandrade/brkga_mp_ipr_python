@@ -1,4 +1,4 @@
-<div align="center">
+m ../<div align="center">
   <img src="https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/docs/src/assets/logo_name_300.png">
 </div>
 
@@ -224,10 +224,8 @@ this code for serious business and experimentation.**
 :books: Tutorial and full documentation
 --------------------------------------------------------------------------------
 
-The tutorial is a working-in-progress yet. Meanwhile, the reader can use
-the [C++ tutorial](https://ceandrade.github.io/brkga_mp_ipr_cpp) or
-the [Julia tutorial](https://ceandrade.github.io/brkga_mp_ipr_julia)
-since the APIs are very similar each other.
+Check out the complete tutorial and API documentation:
+https://ceandrade.github.io/brkga_mp_ipr_python
 
 :black_nib: License and Citing
 --------------------------------------------------------------------------------
