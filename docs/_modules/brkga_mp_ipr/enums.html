@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>brkga_mp_ipr.enums &mdash; BRKGA-MP-IPR 0.9 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/add_target.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BRKGA-MP-IPR
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../page_guide.html">Guide / Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_license.html">BRKGA-MP-IPR License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_todo.html">Todo List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_md_src_contributing.html">Contributing</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BRKGA-MP-IPR</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>brkga_mp_ipr.enums</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for brkga_mp_ipr.enums</h1><div class="highlight"><pre>
+<span></span><span class="c1">###############################################################################</span>
+<span class="c1"># enums.py: Definitions of useful enumerations.</span>
+<span class="c1">#</span>
+<span class="c1"># (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is released under LICENSE.md.</span>
+<span class="c1">#</span>
+<span class="c1"># Created on:  Nov 05, 2019 by ceandrade</span>
+<span class="c1"># Last update: Nov 09, 2019 by ceandrade</span>
+<span class="c1">#</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span>
+<span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+<span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
+<span class="c1"># ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE</span>
+<span class="c1"># LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</span>
+<span class="c1"># CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</span>
+<span class="c1"># SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</span>
+<span class="c1"># INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</span>
+<span class="c1"># CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</span>
+<span class="c1"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span>
+<span class="c1"># POSSIBILITY OF SUCH DAMAGE.</span>
+<span class="c1">###############################################################################</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Flag</span><span class="p">,</span> <span class="n">unique</span>
+
+<span class="c1">###############################################################################</span>
+<span class="c1"># Enumerations</span>
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="ParsingEnum"><a class="viewcode-back" href="../../brkga_mp_ipr.enums.html#brkga_mp_ipr.enums.ParsingEnum">[docs]</a><span class="k">class</span> <span class="nc">ParsingEnum</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Implements a base Enum class that returns an Enum object from a string</span>
+<span class="sd">    (case insensitive).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">_missing_</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        When the constructor cannot find the attribute, it calls this</span>
+<span class="sd">        function. Then, we check if the string of the given name/object is in</span>
+<span class="sd">        the attribute list of the Enum. If so, we return the attribute.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="bp">cls</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">==</span> <span class="nb">str</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">():</span>
+                <span class="k">return</span> <span class="n">member</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Just return the name instead of &lt;name, value&gt;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="Sense"><a class="viewcode-back" href="../../brkga_mp_ipr.enums.html#brkga_mp_ipr.enums.Sense">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">Sense</span><span class="p">(</span><span class="n">ParsingEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Tells the algorithm either to ``MINIMIZE`` or ``MAXIMIZE`` the</span>
+<span class="sd">    objective function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">MINIMIZE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">MAXIMIZE</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="BiasFunctionType"><a class="viewcode-back" href="../../brkga_mp_ipr.enums.html#brkga_mp_ipr.enums.BiasFunctionType">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">BiasFunctionType</span><span class="p">(</span><span class="n">ParsingEnum</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specifies a bias function when choosing parents to mating. This function</span>
+<span class="sd">    substitutes the :math:`\rho` (rho) parameter from the original BRKGA.</span>
+<span class="sd">    For a given rank :math:`r`, we have the following functions:</span>
+
+<span class="sd">    - ``CONSTANT``: 1 / number of parents for mating (all individuals have the</span>
+<span class="sd">      same probability)</span>
+
+<span class="sd">    - ``CUBIC``: :math:`r^{-3}`</span>
+
+<span class="sd">    - ``EXPONENTIAL``: :math:`\epsilon^{-r}`</span>
+
+<span class="sd">    - ``LINEAR``: :math:`1 / r`</span>
+
+<span class="sd">    - ``LOGINVERSE``: :math:`1 / \log(r + 1)`</span>
+
+<span class="sd">    - ``QUADRATIC``: :math:`r^{-2}`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CONSTANT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">CUBIC</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">EXPONENTIAL</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">LINEAR</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">LOGINVERSE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">QUADRATIC</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">CUSTOM</span> <span class="o">=</span> <span class="mi">6</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="PathRelinkingType"><a class="viewcode-back" href="../../brkga_mp_ipr.enums.html#brkga_mp_ipr.enums.PathRelinkingType">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">PathRelinkingType</span><span class="p">(</span><span class="n">ParsingEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specifies type of path relinking:</span>
+
+<span class="sd">    - ``DIRECT``: changes each key for the correspondent in the other</span>
+<span class="sd">      chromosome.</span>
+
+<span class="sd">    - ``PERMUTATION``: switches the order of a key for that in the other</span>
+<span class="sd">      chromosome.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">DIRECT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">PERMUTATION</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="PathRelinkingSelection"><a class="viewcode-back" href="../../brkga_mp_ipr.enums.html#brkga_mp_ipr.enums.PathRelinkingSelection">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">PathRelinkingSelection</span><span class="p">(</span><span class="n">ParsingEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specifies which individuals used to build the path:</span>
+
+<span class="sd">    - ``BESTSOLUTION``: selects, in the order, the best solution of each</span>
+<span class="sd">      population.</span>
+
+<span class="sd">    - ``RANDOMELITE``: chooses uniformly random solutions from the elite sets.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">BESTSOLUTION</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">RANDOMELITE</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="PathRelinkingResult"><a class="viewcode-back" href="../../brkga_mp_ipr.enums.html#brkga_mp_ipr.enums.PathRelinkingResult">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">PathRelinkingResult</span><span class="p">(</span><span class="n">Flag</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specifies the result type/status of path relink procedure:</span>
+
+<span class="sd">    - ``TOO_HOMOGENEOUS``: the chromosomes among the populations are too</span>
+<span class="sd">      homogeneous and the path relink will not generate improveded solutions.</span>
+
+<span class="sd">    - ``NO_IMPROVEMENT``: path relink was done but no improveded solution was</span>
+<span class="sd">      found.</span>
+
+<span class="sd">    - ``ELITE_IMPROVEMENT``: an improved solution among the elite set was</span>
+<span class="sd">      found, but the best solution was not improved.</span>
+
+<span class="sd">    - ``BEST_IMPROVEMENT``: the best solution was improved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">TOO_HOMOGENEOUS</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">NO_IMPROVEMENT</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ELITE_IMPROVEMENT</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">BEST_IMPROVEMENT</span> <span class="o">=</span> <span class="mi">7</span></div>
+
+<span class="c1">################################################################################</span>
+
+<div class="viewcode-block" id="ShakingType"><a class="viewcode-back" href="../../brkga_mp_ipr.enums.html#brkga_mp_ipr.enums.ShakingType">[docs]</a><span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">ShakingType</span><span class="p">(</span><span class="n">ParsingEnum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Specifies the type of shaking to be performed.</span>
+
+<span class="sd">    - ``CHANGE``: applies the following perturbations:</span>
+<span class="sd">        1) Inverts the value of a random chosen, i.e., from :math:`value` to</span>
+<span class="sd">           :math:`1 - value`;</span>
+<span class="sd">        2) Assigns a random value to a random key.</span>
+
+<span class="sd">    - ``SWAP``: applies two swap perturbations:</span>
+<span class="sd">        1) Swaps the values of a randomly chosen key :math:`i` and its</span>
+<span class="sd">           neighbor :math:`i + 1`;</span>
+<span class="sd">        2) Swaps values of two randomly chosen keys.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CHANGE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">SWAP</span> <span class="o">=</span> <span class="mi">1</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carlos E. Andrade
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

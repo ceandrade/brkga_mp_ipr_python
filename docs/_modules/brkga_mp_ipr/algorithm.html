@@ -1,0 +1,1022 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>brkga_mp_ipr.algorithm &mdash; BRKGA-MP-IPR 0.9 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/add_target.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BRKGA-MP-IPR
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../page_guide.html">Guide / Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_license.html">BRKGA-MP-IPR License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_todo.html">Todo List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_md_src_contributing.html">Contributing</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BRKGA-MP-IPR</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>brkga_mp_ipr.algorithm</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for brkga_mp_ipr.algorithm</h1><div class="highlight"><pre>
+<span></span><span class="c1">###############################################################################</span>
+<span class="c1"># algorithm.py: Definition of BRKGA-MP-API methods and algorithms.</span>
+<span class="c1">#</span>
+<span class="c1"># (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is released under LICENSE.md.</span>
+<span class="c1">#</span>
+<span class="c1"># Created on:  Nov 08, 2019 by ceandrade</span>
+<span class="c1"># Last update: Nov 15, 2019 by ceandrade</span>
+<span class="c1">#</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span>
+<span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+<span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
+<span class="c1"># ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE</span>
+<span class="c1"># LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</span>
+<span class="c1"># CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</span>
+<span class="c1"># SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</span>
+<span class="c1"># INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</span>
+<span class="c1"># CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</span>
+<span class="c1"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span>
+<span class="c1"># POSSIBILITY OF SUCH DAMAGE.</span>
+<span class="c1">###############################################################################</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">from</span> <span class="nn">random</span> <span class="k">import</span> <span class="n">Random</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="k">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">brkga_mp_ipr.enums</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">brkga_mp_ipr.types</span> <span class="k">import</span> <span class="o">*</span>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr">[docs]</a><span class="k">class</span> <span class="nc">BrkgaMpIpr</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a Multi-Parent Biased Random-key Genetic Algorithm</span>
+<span class="sd">    with Implicit Path Relinking (BRKGA-MP-IPR).</span>
+
+<span class="sd">    **Main capabilities**</span>
+
+<span class="sd">    **Evolutionary process**</span>
+
+<span class="sd">    In the BRKGA-MP-IPR, we keep a population of chromosomes divided between</span>
+<span class="sd">    the elite and the non-elite group. During the mating, multiple parents</span>
+<span class="sd">    are chosen from the elite group and the non-elite group. They are sorted</span>
+<span class="sd">    either on no-decreasing order for minimization or non-increasing order to</span>
+<span class="sd">    maximization problems. Given this order, a bias function is applied to</span>
+<span class="sd">    the rank of each chromosome, resulting in weight for each one. Using a</span>
+<span class="sd">    roulette method based on the weights, the chromosomes are combined using</span>
+<span class="sd">    a biased crossover.</span>
+
+<span class="sd">    This code also implements the island model, where multiple populations</span>
+<span class="sd">    can be evolved in parallel, and migration between individuals between</span>
+<span class="sd">    the islands are performed using ``exchange_elite()`` method.</span>
+
+<span class="sd">    This code requires a `Decoder` object capable to map a chromosome to a</span>
+<span class="sd">    solution for the specific problem, and return a value to be used as</span>
+<span class="sd">    fitness to the decoded chromosome. The decoder must have the method</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        def decode(self, chromosome: BaseChromosome, rewrite: bool) -&gt; float:</span>
+
+<span class="sd">    where ``chromosome`` is an ``BaseChromosome`` object of representing a</span>
+<span class="sd">    solution and `rewrite` is a boolean indicating that if the decode should</span>
+<span class="sd">    rewrite the chromosome in case it implements local searches and modifies</span>
+<span class="sd">    the initial solution decoded from the chromosome.</span>
+
+<span class="sd">    Note that ``BaseChromosome`` is a simple list of floats and can be</span>
+<span class="sd">    manipulated as so. However, wrapping such a list into a new class allows</span>
+<span class="sd">    the user to customize the chromosome, adding new functionalities as</span>
+<span class="sd">    needed. Please, see ``BaseChromosome`` for more details.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        params (BrkgaParams): The BRKGA and IPR hyper-parameters.</span>
+
+<span class="sd">        opt_sense (Sense): Indicates whether we are maximizing or minimizing.</span>
+
+<span class="sd">        chromosome_size (positive int): Number of genes in the chromosome.</span>
+
+<span class="sd">        elite_size (positive int): Number of elite items in the population.</span>
+
+<span class="sd">        num_mutants (positive int): Number of mutants introduced at each</span>
+<span class="sd">            generation into the population.</span>
+
+<span class="sd">        evolutionary_mechanism_on (bool): If false, no evolution is performed</span>
+<span class="sd">            but only chromosome decoding. Very useful to emulate a</span>
+<span class="sd">            multi-start algorithm.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decoder</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">sense</span><span class="p">:</span> <span class="n">Sense</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                 <span class="n">chromosome_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">BrkgaParams</span><span class="p">,</span>
+                 <span class="n">evolutionary_mechanism_on</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">chrmosome_type</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">BaseChromosome</span><span class="p">):</span>
+
+        <span class="c1">###################</span>
+        <span class="c1"># Initial BRKGA Hyper-parameters assignmet.</span>
+        <span class="c1">###################</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">opt_sense</span> <span class="o">=</span> <span class="n">sense</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chromosome_size</span> <span class="o">=</span> <span class="n">chromosome_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">evolutionary_mechanism_on</span> <span class="o">=</span> <span class="n">evolutionary_mechanism_on</span>
+
+        <span class="k">if</span> <span class="n">evolutionary_mechanism_on</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">elite_percentage</span> <span class="o">*</span>
+                                  <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">params</span><span class="o">.</span><span class="n">mutants_percentage</span> <span class="o">*</span>
+                                   <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span> <span class="o">-</span> <span class="mi">1</span>
+
+        <span class="c1">###################</span>
+        <span class="c1"># Error checking</span>
+        <span class="c1">###################</span>
+
+        <span class="k">if</span> <span class="n">chromosome_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Chromosome size must be larger than &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;zero: </span><span class="si">{chromosome_size}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Population size size must be larger than &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;zero: </span><span class="si">{params.population_size}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Elite set size less then one: &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.elite_size}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Elite set size (</span><span class="si">{self.elite_size}</span><span class="s2">) greater than &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;population size (</span><span class="si">{params.population_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Mutant set size less then zero: &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self.num_mutants}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Mutant set size (</span><span class="si">{self.num_mutants}</span><span class="s2">) greater &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;than population size (</span><span class="si">{params.population_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Elite set size (</span><span class="si">{self.elite_size}</span><span class="s2">) + &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;mutant set size (</span><span class="si">{self.num_mutants}</span><span class="s2">) greater &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;than population size (</span><span class="si">{params.population_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of elite parents must be at least 1: &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;</span><span class="si">{params.num_elite_parents}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">total_parents</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Total parents must be at least 2: &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;</span><span class="si">{params.total_parents}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span> <span class="o">&gt;=</span> <span class="n">params</span><span class="o">.</span><span class="n">total_parents</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of elite parents (</span><span class="si">{params.num_elite_parents}</span><span class="s2">) &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;is greater than or equal to total_parents &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;(</span><span class="si">{params.total_parents}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of elite parents (</span><span class="si">{params.num_elite_parents}</span><span class="s2">) &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;is greater than elite set (</span><span class="si">{self.elite_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of parallel populations must be larger &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;than zero: </span><span class="si">{params.num_independent_populations}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># TODO (ceandrade): enable the following when IPR methods be implemented.</span>
+        <span class="c1"># elif params.alpha_block_size &lt;= 0.0:</span>
+        <span class="c1">#     raise ValueError(f&quot;Alpha block size must be larger than zero: &quot;</span>
+        <span class="c1">#                      f&quot;{params.alpha_block_size}&quot;)</span>
+        <span class="c1"># elif params.pr_percentage &lt;= 0.0 or params.pr_percentage &gt; 1.0:</span>
+        <span class="c1">#     raise ValueError(f&quot;Percentage / path size must be in (0, 1]: &quot;</span>
+        <span class="c1">#                      f&quot;{params.pr_percentage}&quot;)</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">decoder</span><span class="p">,</span> <span class="s2">&quot;decode&quot;</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;The given decoder ({type(decoder)}) &quot;</span>
+                            <span class="n">f</span><span class="s2">&quot;has no &#39;decode()&#39; method&quot;</span><span class="p">)</span>
+
+        <span class="c1">###################</span>
+        <span class="c1"># Engines</span>
+        <span class="c1">###################</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span> <span class="o">=</span> <span class="n">decoder</span>
+        <span class="sd">&quot;&quot;&quot;Problem-dependent Decoder.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span> <span class="o">=</span> <span class="n">Random</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;Mersenne twister random number generator.&quot;&quot;&quot;</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+
+        <span class="c1">###################</span>
+        <span class="c1"># Algorithm data</span>
+        <span class="c1">###################</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ChromosomeType</span> <span class="o">=</span> <span class="n">chrmosome_type</span>
+        <span class="sd">&quot;&quot;&quot;(type BaseChromosome) This is the class/type for the chromosomes.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="sd">&quot;&quot;&quot;(List[Population]) Current populations.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_populations</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="sd">&quot;&quot;&quot;(List[Population]) Previous populations.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bias_function</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;(Callable[[int], float]) The bias function.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_bias_weight</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="sd">&quot;&quot;&quot;(float) Holds the sum of the results of each raking given a bias</span>
+<span class="sd">           function. This value is needed to normalization.&quot;&quot;&quot;</span>
+
+        <span class="c1"># self._shuffled_individuals = [0] * params.population_size</span>
+        <span class="c1"># &quot;&quot;&quot;Used to shuffled individual/chromosome indices during the mate.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parents_ordered</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">params</span><span class="o">.</span><span class="n">total_parents</span>
+        <span class="sd">&quot;&quot;&quot;Defines the order of parents during the mating.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_population</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;Indicates if a initial population is set.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;Indicates if the algorithm was proper initialized.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_phase</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="sd">&quot;&quot;&quot;Indicates if the algorithm have been reset.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pr_start_time</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="sd">&quot;&quot;&quot;Holds the start time for a call of the path relink procedure.&quot;&quot;&quot;</span>
+
+        <span class="c1"># Sets the bias function.</span>
+        <span class="k">if</span> <span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">==</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">LOGINVERSE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_bias_custom_function</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">math</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">r</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">LOGINVERSE</span>
+
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">==</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">LINEAR</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_bias_custom_function</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">r</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">LINEAR</span>
+
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">==</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">QUADRATIC</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_bias_custom_function</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span> <span class="o">**</span> <span class="o">-</span><span class="mf">2.0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">QUADRATIC</span>
+
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">==</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">CUBIC</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_bias_custom_function</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span> <span class="o">**</span> <span class="o">-</span><span class="mf">3.0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">CUBIC</span>
+
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">==</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">EXPONENTIAL</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_bias_custom_function</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">EXPONENTIAL</span>
+
+        <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">==</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">CONSTANT</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_bias_custom_function</span><span class="p">(</span><span class="k">lambda</span> <span class="n">_</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="n">params</span><span class="o">.</span><span class="n">total_parents</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">CONSTANT</span>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Initialization methods</span>
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.set_initial_population"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.set_initial_population">[docs]</a>    <span class="k">def</span> <span class="nf">set_initial_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromosomes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseChromosome</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets initial individuals into the poulation to work as warm-starters.</span>
+<span class="sd">        Such individuals can be obtained from solutions of external</span>
+<span class="sd">        procedures such as fast heuristics, other methaheuristics, or even</span>
+<span class="sd">        relaxations from a mixed integer programming model that models the</span>
+<span class="sd">        problem.</span>
+
+<span class="sd">        All given solutions are assigned to one population only. Therefore, the</span>
+<span class="sd">        maximum number of solutions is the size of the populations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chromosomes (list of BaseChromosome): a set of individuals or</span>
+<span class="sd">                solutions encoded as BaseChromosomes.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``ValueError``: if the number of given chromosomes is larger than</span>
+<span class="sd">                the population size; if the sizes of the given chromosomes do</span>
+<span class="sd">                not match with the required chromosome size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chromosomes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Number of given chromosomes ({len(chromosomes)}) is large &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;than the population size (</span><span class="si">{self.params.population_size}</span><span class="s2">)&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Population</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chromosome</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chromosomes</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chromosome</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromosome_size</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="n">f</span><span class="s2">&quot;Error on setting initial population: chromosome </span><span class="si">{i}</span><span class="s2"> &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;does not have the required dimension (actual size: &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;{len(chromosome)}, required size: </span><span class="si">{self.chromosome_size}</span><span class="s2">)&quot;</span>
+                <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">chromosomes</span>\
+                <span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BaseChromosome</span><span class="p">(</span><span class="n">chromosome</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initial_population</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.set_bias_custom_function"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.set_bias_custom_function">[docs]</a>    <span class="k">def</span> <span class="nf">set_bias_custom_function</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bias_function</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">float</span><span class="p">])</span> \
+            <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sets a new bias function to be used to rank the chromosomes during</span>
+<span class="sd">        the mating. **It must be a positive non-increasing function** returning</span>
+<span class="sd">        a ``float``, i.e., :math:`f : \\mathbb{N}^+ \\to \\mathbb{R}^+` such</span>
+<span class="sd">        that :math:`f(i) \\ge 0`</span>
+<span class="sd">        and :math:`f(i) \\ge f(i+1)` for :math:`i \\in [1..total\_parents]`.</span>
+<span class="sd">        For instance, the following sets an inverse quadratic function:</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            brkga = BRKGA_MP_IPR(...)</span>
+<span class="sd">            brkga.set_bias_custom_function(lambda x : 1.0 / (x * x))</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bias_function: A positive non-increasing function.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``ValueError``: In case the function is not a non-increasing</span>
+<span class="sd">                positive function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">bias_values</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span><span class="n">bias_function</span><span class="p">,</span>
+                           <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">total_parents</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">bias_values</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Bias function must be positive non-increasing&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bias_values</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="n">bias_values</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Bias function is not a non-increasing &quot;</span>
+                                 <span class="s2">&quot;function&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">CUSTOM</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bias_function</span> <span class="o">=</span> <span class="n">bias_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_total_bias_weight</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">bias_values</span><span class="p">)</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.initialize"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.initialize">[docs]</a>    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes the populations and others data structures of the BRKGA.</span>
+<span class="sd">        If an initial population is supplied, this method completes the</span>
+<span class="sd">        remaining individuals, if they do not exist.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            THIS METHOD MUST BE CALLED BEFORE ANY OPTIMIZATION METHODS.</span>
+
+<span class="sd">        This method also performs the initial decoding of the chromosomes.</span>
+<span class="sd">        Therefore, depending on the decoder implementation, this can take a</span>
+<span class="sd">        while, and the user may want to time such procedure in his/her</span>
+<span class="sd">        experiments.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before</span>
+<span class="sd">                and it is not a ``reset()`` call.</span>
+
+<span class="sd">            ``ValueError``: If the bias functions is not set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_phase</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm is already initialized. &quot;</span>
+                               <span class="s2">&quot;Please call &#39;reset()&#39; instead.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bias_function</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The bias function is not defined. &quot;</span>
+                             <span class="s2">&quot;Call set_bias_custom_function() before call &quot;</span>
+                             <span class="s2">&quot;initialize().&quot;</span><span class="p">)</span>
+
+        <span class="c1"># If we have warmstaters, complete the population if necessary.</span>
+        <span class="c1"># Note that it is done only in the true initialization.</span>
+        <span class="n">pop_start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_phase</span><span class="p">:</span>
+            <span class="n">population</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">),</span>
+                               <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">):</span>
+                <span class="n">new_chr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">generate_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chromosome_size</span><span class="p">)</span>
+                <span class="n">population</span><span class="o">.</span><span class="n">chromosomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_chr</span><span class="p">)</span>
+
+            <span class="n">population</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="n">pop_start</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Population</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">)</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_previous_populations</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Population</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">)</span>
+            <span class="p">]</span>
+        <span class="c1"># end if</span>
+
+        <span class="c1"># Build the remaining populations and associated data structures.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pop_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">):</span>
+            <span class="c1"># If no reset, allocate memory.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_reset_phase</span><span class="p">:</span>
+                <span class="n">population</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">):</span>
+                    <span class="n">population</span><span class="o">.</span><span class="n">chromosomes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">generate_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chromosome_size</span><span class="p">)</span>
+                    <span class="p">)</span>
+                <span class="c1"># end for</span>
+                <span class="n">population</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="p">[</span>
+                    <span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">)</span>
+                <span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">chromosome</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fill_chromosome</span><span class="p">(</span><span class="n">chromosome</span><span class="p">)</span>
+            <span class="c1"># end if</span>
+        <span class="c1"># end for</span>
+
+        <span class="c1"># Perform initial decoding. It may take a while.</span>
+        <span class="c1"># NOTE (ceandrade): This loop can be / should be parallelized since</span>
+        <span class="c1"># each decoding is independent. Please, take a look at the C++ and</span>
+        <span class="c1"># Julia versions, where we use OpenMP and Julia threads for that task.</span>
+        <span class="c1"># In Python, due to restrictions to the Python interpreter, this may</span>
+        <span class="c1"># not be possible, from a pure Python implementation perspective.</span>
+        <span class="k">for</span> <span class="n">population</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chromosome</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">population</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">chromosome</span><span class="o">=</span><span class="n">chromosome</span><span class="p">,</span>
+                                             <span class="n">rewrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="n">population</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">population</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_sense</span> <span class="o">==</span> <span class="n">Sense</span><span class="o">.</span><span class="n">MAXIMIZE</span><span class="p">))</span>
+        <span class="c1"># end for</span>
+
+        <span class="c1"># Copy the data to previous populations.</span>
+        <span class="c1"># **NOTE:** (ceandrade) During reset phase, copying item by item maybe</span>
+        <span class="c1"># faster than deepcoping (which allocates new memory).</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_populations</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_phase</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Population manipulation methods</span>
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.exchange_elite"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.exchange_elite">[docs]</a>    <span class="k">def</span> <span class="nf">exchange_elite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_immigrants</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :todo: to be implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.reset"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Resets all populations with brand new keys. All warm-start solutions</span>
+<span class="sd">        provided by ``set_initial_population()`` are discarded. You may</span>
+<span class="sd">        use ``inject_chromosome()`` to insert those solutions again.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm hasn&#39;t been initialized. &quot;</span>
+                               <span class="s2">&quot;Call &#39;initialize()&#39; before &#39;reset()&#39;&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset_phase</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.shake"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.shake">[docs]</a>    <span class="k">def</span> <span class="nf">shake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intensity</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">shaking_type</span><span class="p">:</span> <span class="n">ShakingType</span><span class="p">,</span>
+              <span class="n">population_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :todo: to be implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.inject_chromosome"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.inject_chromosome">[docs]</a>    <span class="k">def</span> <span class="nf">inject_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">:</span> <span class="n">BaseChromosome</span><span class="p">,</span>
+                          <span class="n">population_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+                          <span class="n">fitness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :todo: to be implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Support methods</span>
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.get_best_fitness"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.get_best_fitness">[docs]</a>    <span class="k">def</span> <span class="nf">get_best_fitness</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the fitness/value of the best individual found so far among</span>
+<span class="sd">        all populations.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm hasn&#39;t been initialized. Call &quot;</span>
+                               <span class="s2">&quot;&#39;initialize()&#39; before &#39;get_best_fitness()&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">best</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">best</span><span class="p">)</span> <span class="o">==</span> \
+               <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_sense</span> <span class="o">==</span> <span class="n">Sense</span><span class="o">.</span><span class="n">MINIMIZE</span><span class="p">):</span>
+                <span class="n">best</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">best</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.get_best_chromosome"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.get_best_chromosome">[docs]</a>    <span class="k">def</span> <span class="nf">get_best_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseChromosome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a deep copy of the best individual found so far among all</span>
+<span class="sd">        populations.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm hasn&#39;t been initialized. Call &quot;</span>
+                               <span class="s2">&quot;&#39;initialize()&#39; before &#39;get_best_chromosome()&#39;&quot;</span><span class="p">)</span>
+
+        <span class="n">best_value</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">best_individual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">):</span>
+            <span class="n">value</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">best_value</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_sense</span> <span class="o">==</span> <span class="n">Sense</span><span class="o">.</span><span class="n">MINIMIZE</span><span class="p">):</span>
+                <span class="n">best_value</span> <span class="o">=</span> <span class="n">value</span>
+                <span class="n">best_individual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">best_individual</span><span class="p">)</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.get_chromosome"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.get_chromosome">[docs]</a>    <span class="k">def</span> <span class="nf">get_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> \
+            <span class="o">-&gt;</span> <span class="n">BaseChromosome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a deep copy of the chromosome ranked at ``position``</span>
+<span class="sd">        in the population ``population_index``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            population_index (positive int): the population from where</span>
+<span class="sd">                fetch the chromosome.</span>
+
+<span class="sd">            position (positive int): position the chromosome position,</span>
+<span class="sd">                ordered by fitness. The best chromosome is located in</span>
+<span class="sd">                position 0.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before.</span>
+
+<span class="sd">            ``ValueError``: either if ``population_index &lt; 0`` or</span>
+<span class="sd">                ``population_index &gt;= num_independent_populations``.</span>
+
+<span class="sd">            ``ValueError``: either if when ``position &lt; 0`` or</span>
+<span class="sd">                ``position &gt;= population_size``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm hasn&#39;t been initialized. Call &quot;</span>
+                               <span class="s2">&quot;&#39;initialize()&#39; before &#39;get_chromosome()&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">population_index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> \
+           <span class="n">population_index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Population must be in &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;[0, {self.params.num_independent_populations - 1}]: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{population_index}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">position</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">position</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Chromosome position must be in &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;[0, {self.params.population_size - 1}]: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{position}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">pop</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">position</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.get_current_population"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.get_current_population">[docs]</a>    <span class="k">def</span> <span class="nf">get_current_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a reference for population ``population_index``.</span>
+
+<span class="sd">        Warning:</span>
+<span class="sd">            IT IS NOT ADIVISED TO CHANGE THE POPULATION DIRECTLY, since such</span>
+<span class="sd">            changes can result in undefined behavior.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            population_index (positive int): the index for the population.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before.</span>
+
+<span class="sd">            ``ValueError``: either if ``population_index &lt; 0`` or</span>
+<span class="sd">                ``population_index &gt;= num_independent_populations``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm hasn&#39;t been initialized. &quot;</span>
+                               <span class="s2">&quot;Call &#39;initialize()&#39; before &quot;</span>
+                               <span class="s2">&quot;&#39;get_current_population()&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">population_index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> \
+           <span class="n">population_index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Population must be in &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;[0, {self.params.num_independent_populations - 1}]: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{population_index}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Optimization (evolutionary / Path-relink) methods</span>
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.evolve"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.evolve">[docs]</a>    <span class="k">def</span> <span class="nf">evolve</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_generations</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evolves all populations for ``generations``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            num_generations (positive int): the number of generations to be</span>
+<span class="sd">                evolved.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before.</span>
+
+<span class="sd">            ``ValueError``: either if ``population_index &lt; 0`` or</span>
+<span class="sd">                ``population_index &gt;= num_independent_populations``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm hasn&#39;t been initialized. &quot;</span>
+                                <span class="s2">&quot;Call &#39;initialize()&#39; before &quot;</span>
+                                <span class="s2">&quot;&#39;evolve()&#39;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">num_generations</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Number of generations must be large than one. &quot;</span>
+                             <span class="n">f</span><span class="s2">&quot;Given </span><span class="si">{num_generations}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_generations</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">pop_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">evolve_population</span><span class="p">(</span><span class="n">pop_idx</span><span class="p">)</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.evolve_population"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.evolve_population">[docs]</a>    <span class="k">def</span> <span class="nf">evolve_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">population_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Evolves the population ``population_index`` to the next generation.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Although this method allows us to evolve populations</span>
+<span class="sd">            independently, and therefore, provide nice flexibility, the</span>
+<span class="sd">            generation of each population can be unsyched. We must proceed</span>
+<span class="sd">            with care when using this function instead of ``evolve()``.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            population_index (positive int): the index for the population to</span>
+<span class="sd">                be evolved.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ``RuntimeError``: If the algorith has been initialized before.</span>
+
+<span class="sd">            ``ValueError``: either if ``population_index &lt; 0`` or</span>
+<span class="sd">                ``population_index &gt;= num_independent_populations``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;The algorithm hasn&#39;t been initialized. &quot;</span>
+                                <span class="s2">&quot;Call &#39;initialize()&#39; before &quot;</span>
+                                <span class="s2">&quot;&#39;evolve_population()&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">population_index</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> \
+           <span class="n">population_index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Population must be in &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;[0, {self.params.num_independent_populations - 1}]: &quot;</span>
+                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{population_index}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Make names shorter.</span>
+        <span class="n">curr_pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span>
+        <span class="n">next_pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_previous_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span>
+
+        <span class="c1"># Which index we start to replace individuals.</span>
+        <span class="n">replace_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span>
+
+        <span class="c1"># First, we copy the elite chromosomes to the next generation.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">):</span>
+            <span class="n">next_pop</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">i</span><span class="p">][:]</span> <span class="o">=</span> <span class="n">curr_pop</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">i</span><span class="p">][:]</span>
+            <span class="n">next_pop</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_pop</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+        <span class="c1"># Then, we mate/crossover &#39;pop_size - elite_size - num_mutants&#39; pairs.</span>
+        <span class="k">for</span> <span class="n">chr_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">,</span> <span class="n">replace_idx</span><span class="p">):</span>
+            <span class="c1"># First, we shuffled the elite set and non-elite set indices,</span>
+            <span class="c1"># then we take the elite and non-elite parents. Note that we cannot</span>
+            <span class="c1"># shuffled both sets together, otherwise we would mix elite</span>
+            <span class="c1"># and non-elite individuals.</span>
+            <span class="n">elite_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">elite_indices</span><span class="p">)</span>
+            <span class="n">non_elite_indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">,</span> <span class="n">replace_idx</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">non_elite_indices</span><span class="p">)</span>
+            <span class="n">shuffled_individuals</span> <span class="o">=</span> <span class="n">elite_indices</span> <span class="o">+</span> <span class="n">non_elite_indices</span>
+
+            <span class="c1"># Take the elite parents.</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parents_ordered</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">curr_pop</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">shuffled_individuals</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+
+            <span class="c1"># Take the non-elite parents.</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">total_parents</span> <span class="o">-</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_parents_ordered</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span><span class="p">]</span> <span class="o">=</span> \
+                    <span class="n">curr_pop</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">shuffled_individuals</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">]]</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_parents_ordered</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_sense</span> <span class="o">==</span>
+                                                <span class="n">Sense</span><span class="o">.</span><span class="n">MAXIMIZE</span><span class="p">))</span>
+
+            <span class="c1"># Performs the mate.</span>
+            <span class="k">for</span> <span class="n">allele</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chromosome_size</span><span class="p">):</span>
+                <span class="c1"># Roullete method.</span>
+                <span class="n">parent</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">cumulative_probability</span> <span class="o">=</span> <span class="mf">0.0</span>
+                <span class="n">toss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span>
+                <span class="k">while</span> <span class="n">cumulative_probability</span> <span class="o">&lt;</span> <span class="n">toss</span><span class="p">:</span>
+                    <span class="c1"># Start parent from 1 because the bias function.</span>
+                    <span class="n">parent</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">cumulative_probability</span> <span class="o">+=</span> \
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_bias_function</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_total_bias_weight</span>
+
+                <span class="c1"># Decrement parent to the right index.</span>
+                <span class="n">parent</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">next_pop</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">chr_idx</span><span class="p">][</span><span class="n">allele</span><span class="p">]</span> <span class="o">=</span> <span class="n">curr_pop</span>\
+                    <span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_parents_ordered</span><span class="p">[</span><span class="n">parent</span><span class="p">][</span><span class="mi">1</span><span class="p">]][</span><span class="n">allele</span><span class="p">]</span>
+            <span class="c1"># end for mate.</span>
+        <span class="c1"># end for crossover.</span>
+
+        <span class="c1"># To finish, we fill up the remaining spots with mutants.</span>
+        <span class="k">for</span> <span class="n">chr_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span><span class="p">,</span>
+                             <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fill_chromosome</span><span class="p">(</span><span class="n">next_pop</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">chr_idx</span><span class="p">])</span>
+
+        <span class="c1"># Perform the decoding on the offpring and mutants.</span>
+        <span class="c1"># NOTE (ceandrade): This loop can be / should be parallelized since</span>
+        <span class="c1"># each decoding is independent. Please, take a look at the C++ and</span>
+        <span class="c1"># Julia versions, where we use OpenMP and Julia threads for that task.</span>
+        <span class="c1"># In Python, due to restrictions to the Python interpreter, this may</span>
+        <span class="c1"># not be possible, from a pure Python implementation perspective.</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decoder</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">chromosome</span><span class="o">=</span><span class="n">next_pop</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                         <span class="n">rewrite</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">next_pop</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+
+        <span class="n">next_pop</span><span class="o">.</span><span class="n">fitness</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">opt_sense</span> <span class="o">==</span> <span class="n">Sense</span><span class="o">.</span><span class="n">MAXIMIZE</span><span class="p">))</span>
+
+        <span class="c1"># Swap populations.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_previous_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">],</span> \
+        <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span> <span class="o">=</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">],</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">_previous_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.path_relink"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.path_relink">[docs]</a>    <span class="k">def</span> <span class="nf">path_relink</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pr_type</span><span class="p">:</span> <span class="n">PathRelinkingType</span><span class="p">,</span>
+                    <span class="n">pr_selection</span><span class="p">:</span> <span class="n">PathRelinkingSelection</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span>
+                    <span class="n">number_pairs</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">minimum_distance</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+                    <span class="n">block_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">max_time</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                    <span class="n">percentage</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PathRelinkingResult</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :todo: to be implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Helper methods</span>
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.generate_chromosome"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.generate_chromosome">[docs]</a>    <span class="k">def</span> <span class="nf">generate_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromosome_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BaseChromosome</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Generates a new chromosome with the given size. The new chromosome is</span>
+<span class="sd">        an object of class ``self._ChromosomeType`` (which should be a</span>
+<span class="sd">        ``BaseChromosome`` derivative), given in the constructor. If the</span>
+<span class="sd">        chromosome type is not given in the constructor, ``BaseChromosome`` is</span>
+<span class="sd">        used instead. Please, see the documentation of both the</span>
+<span class="sd">        ``BaseChromosome`` and the constructor for more details.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chromosome_size (positive int): The size of the chromosome.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ChromosomeType</span><span class="p">([</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">chromosome_size</span><span class="p">)</span>
+        <span class="p">])</span></div>
+
+    <span class="c1">###########################################################################</span>
+
+<div class="viewcode-block" id="BrkgaMpIpr.fill_chromosome"><a class="viewcode-back" href="../../brkga_mp_ipr.algorithm.html#brkga_mp_ipr.algorithm.BrkgaMpIpr.fill_chromosome">[docs]</a>    <span class="k">def</span> <span class="nf">fill_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">:</span> <span class="n">BaseChromosome</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Fills a given chromosome with random keys, using the pre-allocated</span>
+<span class="sd">        memory.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chromosome (BaseChromosome): The chromosome to be filled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">chromosome</span><span class="p">)):</span>
+            <span class="n">chromosome</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rng</span><span class="o">.</span><span class="n">random</span><span class="p">()</span></div>
+
+    <span class="c1">###########################################################################</span>
+    <span class="c1"># Core internal/private path-relink methods</span>
+    <span class="c1">###########################################################################</span>
+
+    <span class="k">def</span> <span class="nf">_direct_path_relink</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">chr1</span><span class="p">:</span> <span class="n">BaseChromosome</span><span class="p">,</span> <span class="n">chr2</span><span class="p">:</span> <span class="n">BaseChromosome</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span>
+            <span class="n">best_found</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">block_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">percentage</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :todo: to be implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="c1">###########################################################################</span>
+
+    <span class="k">def</span> <span class="nf">_permutation_based_path_relink</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">chr1</span><span class="p">:</span> <span class="n">BaseChromosome</span><span class="p">,</span> <span class="n">chr2</span><span class="p">:</span> <span class="n">BaseChromosome</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="n">callable</span><span class="p">,</span>
+            <span class="n">best_found</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">block_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_time</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">percentage</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :todo: to be implemented.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carlos E. Andrade
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -315,7 +315,7 @@ def main() -> None:
     for _, node in tour:
         print(node, end=" ")
 
-    print("\nInstance,Seed,NumNodes,TotalIterations,TotalTime,"
+    print("\n\nInstance,Seed,NumNodes,TotalIterations,TotalTime,"
           #"TotalPRTime,PRCalls,NumHomogenities,NumPRImprovElite,"
           #"NumPrImprovBest,"
           "LargeOffset,LastUpdateIteration,LastUpdateTime,"

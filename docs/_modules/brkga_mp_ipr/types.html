@@ -1,0 +1,378 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>brkga_mp_ipr.types &mdash; BRKGA-MP-IPR 0.9 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/favicon.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script type="text/javascript" src="../../_static/add_target.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/custom_theme.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BRKGA-MP-IPR
+          
+
+          
+            
+            <img src="../../_static/logo.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../page_guide.html">Guide / Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_license.html">BRKGA-MP-IPR License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_todo.html">Todo List</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../page_md_src_contributing.html">Contributing</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BRKGA-MP-IPR</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>brkga_mp_ipr.types</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for brkga_mp_ipr.types</h1><div class="highlight"><pre>
+<span></span><span class="c1">###############################################################################</span>
+<span class="c1"># types.py: Definitions of internal data structures and external API.</span>
+<span class="c1">#</span>
+<span class="c1"># (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.</span>
+<span class="c1">#</span>
+<span class="c1"># This code is released under LICENSE.md.</span>
+<span class="c1">#</span>
+<span class="c1"># Created on:  Nov 05, 2019 by ceandrade</span>
+<span class="c1"># Last update: Nov 08, 2019 by ceandrade</span>
+<span class="c1">#</span>
+<span class="c1"># THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS &quot;AS IS&quot;</span>
+<span class="c1"># AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE</span>
+<span class="c1"># IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE</span>
+<span class="c1"># ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE</span>
+<span class="c1"># LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR</span>
+<span class="c1"># CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF</span>
+<span class="c1"># SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS</span>
+<span class="c1"># INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN</span>
+<span class="c1"># CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)</span>
+<span class="c1"># ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE</span>
+<span class="c1"># POSSIBILITY OF SUCH DAMAGE.</span>
+<span class="c1">###############################################################################</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">annotations</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">from</span> <span class="nn">brkga_mp_ipr.enums</span> <span class="k">import</span> <span class="n">BiasFunctionType</span><span class="p">,</span> <span class="n">PathRelinkingType</span><span class="p">,</span> \
+    <span class="n">PathRelinkingSelection</span>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="BrkgaParams"><a class="viewcode-back" href="../../brkga_mp_ipr.types.html#brkga_mp_ipr.types.BrkgaParams">[docs]</a><span class="k">class</span> <span class="nc">BrkgaParams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents the BRKGA and IPR hyper-parameters.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        ** BRKGA Hyper-parameters **</span>
+
+<span class="sd">        population_size (int): Number of elements in the population [&gt; 0].</span>
+
+<span class="sd">        elite_percentage (float): Percentage of individuals to become the</span>
+<span class="sd">            elite set (0, 1].</span>
+
+<span class="sd">        mutants_percentage (float): Percentage of mutants to be inserted in</span>
+<span class="sd">            the population.</span>
+
+<span class="sd">        num_elite_parents (int): Number of elite parents for mating [&gt; 0].</span>
+
+<span class="sd">        total_parents (int): Number of total parents for mating [&gt; 0].</span>
+
+<span class="sd">        bias_type (BiasFunction): Type of bias that will be used.</span>
+
+<span class="sd">        num_independent_populations (int): Number of independent parallel</span>
+<span class="sd">            populations.</span>
+
+<span class="sd">        **Path Relinking parameters**</span>
+
+<span class="sd">        pr_number_pairs (int): Number of pairs of chromosomes to be tested</span>
+<span class="sd">            to path relinking.</span>
+
+<span class="sd">        pr_minimum_distance (float): Mininum distance between chromosomes</span>
+<span class="sd">            selected to path-relinking.</span>
+
+<span class="sd">        pr_type (PathRelinkingType): Path relinking type.</span>
+<span class="sd">        pr_selection (PathRelinkingSelection): Individual selection to</span>
+<span class="sd">            path-relinking.</span>
+
+<span class="sd">        alpha_block_size (float): Defines the block size based on the size of</span>
+<span class="sd">            the population.</span>
+
+<span class="sd">        pr_percentage (float): Percentage / path size to be computed.</span>
+<span class="sd">            Value in (0, 1].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a BrkgaParams object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">population_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">elite_percentage</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mutants_percentage</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_elite_parents</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">total_parents</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bias_type</span> <span class="o">=</span> <span class="n">BiasFunctionType</span><span class="o">.</span><span class="n">CONSTANT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_independent_populations</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_number_pairs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_minimum_distance</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_type</span> <span class="o">=</span> <span class="n">PathRelinkingType</span><span class="o">.</span><span class="n">DIRECT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_selection</span> <span class="o">=</span> <span class="n">PathRelinkingSelection</span><span class="o">.</span><span class="n">BESTSOLUTION</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alpha_block_size</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pr_percentage</span> <span class="o">=</span> <span class="mf">0.0</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="ExternalControlParams"><a class="viewcode-back" href="../../brkga_mp_ipr.types.html#brkga_mp_ipr.types.ExternalControlParams">[docs]</a><span class="k">class</span> <span class="nc">ExternalControlParams</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Represents additional control parameters that can be used outside this</span>
+<span class="sd">    framework.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        exchange_interval (int):  Interval at which elite chromosomes are</span>
+<span class="sd">            exchanged (0 means no exchange) [&gt; 0].</span>
+
+<span class="sd">        num_exchange_indivuduals (int): Number of elite chromosomes exchanged</span>
+<span class="sd">            from each population [&gt; 0].</span>
+
+<span class="sd">        reset_interval (int): Interval at which the populations are reset</span>
+<span class="sd">            (0 means no reset) [&gt; 0].</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exchange_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="n">num_exchange_indivuduals</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+                 <span class="n">reset_interval</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a ExternalControlParams object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exchange_interval</span> <span class="o">=</span> <span class="n">exchange_interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_exchange_indivuduals</span> <span class="o">=</span> <span class="n">num_exchange_indivuduals</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reset_interval</span> <span class="o">=</span> <span class="n">reset_interval</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="BaseChromosome"><a class="viewcode-back" href="../../brkga_mp_ipr.types.html#brkga_mp_ipr.types.BaseChromosome">[docs]</a><span class="k">class</span> <span class="nc">BaseChromosome</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This class represents a chromosome using a vector in the unitary</span>
+<span class="sd">    hypercube, i.e., :math:`v \\in [0,1]^n` where :math:`n` is the size of the</span>
+<span class="sd">    array (dimensions of the hypercube).</span>
+
+<span class="sd">    Note that this base class is a simple list of float numbers and can be</span>
+<span class="sd">    used in the algorithm directly. However, in some cases, the user wants</span>
+<span class="sd">    additional capabilities in the Chromosome class, such as extra data and</span>
+<span class="sd">    so. For instance, in the example below, the chromosome also keeps the</span>
+<span class="sd">    makespan and total completion time for a scheduling problem:</span>
+
+<span class="sd">    .. code-block:: python</span>
+
+<span class="sd">        class SchedulingChromosome(BaseChromosome):</span>
+<span class="sd">            def __init__(self, value):</span>
+<span class="sd">                super().__init__(value)</span>
+<span class="sd">                self.makespan = 0.0</span>
+<span class="sd">                self.total_completion_time = 0.0</span>
+
+<span class="sd">    Note that when subclassing BaseChromosome, we must define the method</span>
+<span class="sd">    ``__init__(self, value)`` and call the parent (``BaseChromosome``)</span>
+<span class="sd">    constructor. We need at least one argument to be passed to</span>
+<span class="sd">    ``BaseChromosome`` constructor.</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
+<span class="c1">###############################################################################</span>
+
+<div class="viewcode-block" id="Population"><a class="viewcode-back" href="../../brkga_mp_ipr.types.html#brkga_mp_ipr.types.Population">[docs]</a><span class="k">class</span> <span class="nc">Population</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Encapsulates a population of chromosomes. Note that this struct is **NOT**</span>
+<span class="sd">    meant to be used externally of this unit.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        chromosomes (List[BaseChromosome]): Population of chromosomes.</span>
+
+<span class="sd">        fitness (List[Tuple[float, int]]): Fitness of a each chromosome.</span>
+<span class="sd">            Each pair represents the fitness and the chromosome index.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_population</span><span class="p">:</span> <span class="n">Population</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initializes a new population. If ``other_population`` is not ``None``,</span>
+<span class="sd">        we copy it.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other_population (Population): The population to be copied.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">chromosomes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">other_population</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chromosomes</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">other_population</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fitness</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">other_population</span><span class="o">.</span><span class="n">fitness</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Carlos E. Andrade
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,12 +1,9 @@
 ###############################################################################
-# exceptions.py: Definitions BRKGA exceptions.
+# (c) Copyright 2019, Carlos Eduardo de Andrade.
+# All Rights Reserved.
 #
-# (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.
-#
-# This code is released under LICENSE.md.
-#
-# Created on:  Nov 07, 2019 by ceandrade
-# Last update: Nov 07, 2019 by ceandrade
+#  Created on : Nov 21, 2019 by andrade
+#  Last update: Nov 21, 2019 by andrade
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -21,7 +18,16 @@
 # POSSIBILITY OF SUCH DAMAGE.
 ###############################################################################
 
-class LoadError(RuntimeError):
-    """
-    Specifies an error while reading a configuration file.
-    """
+.PHONY: all clean
+
+all:
+	sphinx-apidoc-3.7 -f -e --extensions autodoc,todo,mathjax,viewcode \
+		-o src/rst ../brkga_mp_ipr
+	sphinx-build-3.7 -b html src/rst build/html
+	touch  build/html/.nojekyll
+	rm -rf ../docs
+	cp -a  build/html ../docs
+	cp -a src/assets/logo*png ../docs/_static
+
+clean:
+	rm -rf build
