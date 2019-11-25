@@ -9,6 +9,78 @@ Guide / Tutorial
 Installation and tests
 -------------------------------------------------------------------------------
 
+BRKGA-MP-IPR was developed using >= Python 3.7.2, especially using the new
+``enum`` capabilities. The parameters' loading and writing functions may fail
+on Python 3.6 or previous versions. However, the main algorithm functions
+work fine on Python 3.6, by providing BrkgaParams manually (or implementing
+your own parameter loading).
+
+Assuming you have the correct Python version, the installation is pretty
+straightforward using Pypi:
+
+.. code-block:: bash
+
+    $ pip3.7 search brkga
+    brkga-mp-ipr (0.9)  - The Multi-Parent Biased Random-Key Genetic Algorithm with Implict Path Relink
+
+    $ pip3.7 install brkga-mp-ipr
+    Collecting brkga-mp-ipr
+    ...
+    Installing collected packages: brkga-mp-ipr
+    Successfully installed brkga-mp-ipr-0.9
+
+    $ python3.7
+    Python 3.7.5 (default, Oct 19 2019, 01:20:12)
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> from brkga_mp_ipr.types_io import load_configuration
+    >>> from brkga_mp_ipr.algorithm import BrkgaMpIpr
+    >>> BrkgaMpIpr
+    <class 'brkga_mp_ipr.algorithm.BrkgaMpIpr'>
+    >>> load_configuration
+    <function load_configuration at 0x10620e320>
+    >>> help(load_configuration)
+    Help on function load_configuration in module brkga_mp_ipr.types_io:
+
+    load_configuration(configuration_file: str) -> (<class 'brkga_mp_ipr.types.BrkgaParams'>, <class 'brkga_mp_ipr.types.ExternalControlParams'>)
+        Loads the parameters from `configuration_file` returning them as a tuple.
+
+        Args:
+            configuration_file (str): plain text file containing the configuration.
+
+        Returns:
+            A tuple containing a `BrkgaParams` and a `ExternalControlParams` object.
+
+        Raises:
+            IsADirectoryError: If `configuration_file` is a folder.
+
+            FileNotFoundError: If `configuration_file` does not exist.
+
+            LoadError: In cases of missing data or bad-formatted data.
+
+BRKGA-MP-IPR also provides a thorough unit testing that aims to harden and make
+the code ready for production environments.
+You can use builtin
+`unittest <https://docs.python.org/3.7/library/unittest.html>`_,
+or yet `pytest <https://www.pytest.org>`_
+or `Tox <https://tox.readthedocs.io>`_.
+
+.. note::
+    The tests take about 10 minutes, mainly because the permutation path relink.
+
+.. warning::
+    It is a hard test to test algorithms that use random signals. In
+    BRKGA-MP-IPR, the tests are carefully designed to ensure repeatability. For
+    that, we use the Mersenne Twister
+    `[1] <https://en.wikipedia.org/wiki/Mersenne_Twister>`_
+    `[2] <http://dx.doi.org/10.1145/272991.272995>`_ as our standard random
+    generator number engine, particularly the `version that comes with
+    Python 3.7 <https://docs.python.org/3.7/library/random.html>`_.
+    However, it may happen that such engine has slightly different
+    implementations across platforms and, therefore, the tests may fail. The
+    current version was tested on 64-bit platforms (Mac OS X, GNU/Linux, and
+    Windows 10).
+
+
 .. _doxid-guide_1guide_tldr:
 
 TL;DR

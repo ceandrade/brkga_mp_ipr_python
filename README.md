@@ -30,14 +30,14 @@ BRKGA-MP-IPR - Python version
     </a>
   </td>
 </tr>
-<!-- <tr>
+<tr>
   <td>Documentation</td>
   <td>
     <a href="https://ceandrade.github.io/brkga_mp_ipr_python">
-    <img src="https://img.shields.io/badge/api-reference-blue.svg" alt="Documentation" />
+    <img src="https://img.shields.io/badge/Tutorial-API-blue.svg" alt="Documentation" />
     </a>
   </td>
-</tr> -->
+</tr>
 <tr>
   <td>License</td>
   <td>
@@ -91,7 +91,47 @@ on Python 3.6 or previous versions. However, the main algorithm functions
 work fine on Python 3.6, by providing BrkgaParams manually (or implementing
 your own parameter loading).
 
-TODO: actual installation.
+Assuming you have the correct Python version, the installation is pretty
+straightforward using Pypi:
+
+```
+$ pip3.7 search brkga
+brkga-mp-ipr (0.9)  - The Multi-Parent Biased Random-Key Genetic Algorithm with Implict Path Relink
+
+$ pip3.7 install brkga-mp-ipr
+Collecting brkga-mp-ipr
+...
+Installing collected packages: brkga-mp-ipr
+Successfully installed brkga-mp-ipr-0.9
+
+$ python3.7
+Python 3.7.5 (default, Oct 19 2019, 01:20:12)
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from brkga_mp_ipr.types_io import load_configuration
+>>> from brkga_mp_ipr.algorithm import BrkgaMpIpr
+>>> BrkgaMpIpr
+<class 'brkga_mp_ipr.algorithm.BrkgaMpIpr'>
+>>> load_configuration
+<function load_configuration at 0x10620e320>
+>>> help(load_configuration)
+Help on function load_configuration in module brkga_mp_ipr.types_io:
+
+load_configuration(configuration_file: str) -> (<class 'brkga_mp_ipr.types.BrkgaParams'>, <class 'brkga_mp_ipr.types.ExternalControlParams'>)
+    Loads the parameters from `configuration_file` returning them as a tuple.
+
+    Args:
+        configuration_file (str): plain text file containing the configuration.
+
+    Returns:
+        A tuple containing a `BrkgaParams` and a `ExternalControlParams` object.
+
+    Raises:
+        IsADirectoryError: If `configuration_file` is a folder.
+
+        FileNotFoundError: If `configuration_file` does not exist.
+
+        LoadError: In cases of missing data or bad-formatted data.
+```
 
 BRKGA-MP-IPR also provides a thorough unit testing that aims to harden and make
 the code ready for production environments.
@@ -240,8 +280,8 @@ article explicitly:":
 
 > C.E. Andrade. R.F. Toso, J.F. Gonçalves, M.G.C. Resende. The Multi-Parent
 > Biased Random-key Genetic Algorithm with Implicit Path Relinking. _European
-> Jornal of Operational Research_, volume XX, issue X, pages xx-xx, 2019.
-> DOI [to be determined](http://dx.doi.org/xxx)
+> Jornal of Operational Research_, To appear, 2019.
+> DOI https://doi.org/10.1016/j.ejor.2019.11.037
 
 [Check it out the full license.](https://github.com/ceandrade/brkga_mp_ipr_julia/blob/master/LICENSE.md)
 

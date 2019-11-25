@@ -192,6 +192,75 @@
 <span id="doxid-guide"></span><span id="index-0"></span><h1>Guide / Tutorial<a class="headerlink" href="#guide-tutorial" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="installation-and-tests">
 <span id="doxid-guide-1guide-installation"></span><h2>Installation and tests<a class="headerlink" href="#installation-and-tests" title="Permalink to this headline">¶</a></h2>
+<p>BRKGA-MP-IPR was developed using &gt;= Python 3.7.2, especially using the new
+<code class="docutils literal notranslate"><span class="pre">enum</span></code> capabilities. The parameters’ loading and writing functions may fail
+on Python 3.6 or previous versions. However, the main algorithm functions
+work fine on Python 3.6, by providing BrkgaParams manually (or implementing
+your own parameter loading).</p>
+<p>Assuming you have the correct Python version, the installation is pretty
+straightforward using Pypi:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ pip3.7 search brkga
+brkga-mp-ipr <span class="o">(</span><span class="m">0</span>.9<span class="o">)</span>  - The Multi-Parent Biased Random-Key Genetic Algorithm with Implict Path Relink
+
+$ pip3.7 install brkga-mp-ipr
+Collecting brkga-mp-ipr
+...
+Installing collected packages: brkga-mp-ipr
+Successfully installed brkga-mp-ipr-0.9
+
+$ python3.7
+Python <span class="m">3</span>.7.5 <span class="o">(</span>default, Oct <span class="m">19</span> <span class="m">2019</span>, <span class="m">01</span>:20:12<span class="o">)</span>
+Type <span class="s2">&quot;help&quot;</span>, <span class="s2">&quot;copyright&quot;</span>, <span class="s2">&quot;credits&quot;</span> or <span class="s2">&quot;license&quot;</span> <span class="k">for</span> more information.
+&gt;&gt;&gt; from brkga_mp_ipr.types_io import load_configuration
+&gt;&gt;&gt; from brkga_mp_ipr.algorithm import BrkgaMpIpr
+&gt;&gt;&gt; BrkgaMpIpr
+&lt;class <span class="s1">&#39;brkga_mp_ipr.algorithm.BrkgaMpIpr&#39;</span>&gt;
+&gt;&gt;&gt; load_configuration
+&lt;<span class="k">function</span> load_configuration at 0x10620e320&gt;
+&gt;&gt;&gt; help<span class="o">(</span>load_configuration<span class="o">)</span>
+Help on <span class="k">function</span> load_configuration in module brkga_mp_ipr.types_io:
+
+load_configuration<span class="o">(</span>configuration_file: str<span class="o">)</span> -&gt; <span class="o">(</span>&lt;class <span class="s1">&#39;brkga_mp_ipr.types.BrkgaParams&#39;</span>&gt;, &lt;class <span class="s1">&#39;brkga_mp_ipr.types.ExternalControlParams&#39;</span>&gt;<span class="o">)</span>
+    Loads the parameters from <span class="sb">`</span>configuration_file<span class="sb">`</span> returning them as a tuple.
+
+    Args:
+        configuration_file <span class="o">(</span>str<span class="o">)</span>: plain text file containing the configuration.
+
+    Returns:
+        A tuple containing a <span class="sb">`</span>BrkgaParams<span class="sb">`</span> and a <span class="sb">`</span>ExternalControlParams<span class="sb">`</span> object.
+
+    Raises:
+        IsADirectoryError: If <span class="sb">`</span>configuration_file<span class="sb">`</span> is a folder.
+
+        FileNotFoundError: If <span class="sb">`</span>configuration_file<span class="sb">`</span> does not exist.
+
+        LoadError: In cases of missing data or bad-formatted data.
+</pre></div>
+</div>
+<p>BRKGA-MP-IPR also provides a thorough unit testing that aims to harden and make
+the code ready for production environments.
+You can use builtin
+<a class="reference external" href="https://docs.python.org/3.7/library/unittest.html">unittest</a>,
+or yet <a class="reference external" href="https://www.pytest.org">pytest</a>
+or <a class="reference external" href="https://tox.readthedocs.io">Tox</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The tests take about 10 minutes, mainly because the permutation path relink.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is a hard test to test algorithms that use random signals. In
+BRKGA-MP-IPR, the tests are carefully designed to ensure repeatability. For
+that, we use the Mersenne Twister
+<a class="reference external" href="https://en.wikipedia.org/wiki/Mersenne_Twister">[1]</a>
+<a class="reference external" href="http://dx.doi.org/10.1145/272991.272995">[2]</a> as our standard random
+generator number engine, particularly the <a class="reference external" href="https://docs.python.org/3.7/library/random.html">version that comes with
+Python 3.7</a>.
+However, it may happen that such engine has slightly different
+implementations across platforms and, therefore, the tests may fail. The
+current version was tested on 64-bit platforms (Mac OS X, GNU/Linux, and
+Windows 10).</p>
+</div>
 </div>
 <div class="section" id="tl-dr">
 <span id="doxid-guide-1guide-tldr"></span><h2>TL;DR<a class="headerlink" href="#tl-dr" title="Permalink to this headline">¶</a></h2>
