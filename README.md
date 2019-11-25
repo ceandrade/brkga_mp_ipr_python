@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/docs/src/assets/logo_name_300.png">
+  <img src="https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/src_docs/src/assets/logo_name_300.png">
 </div>
 
 BRKGA-MP-IPR - Python version
