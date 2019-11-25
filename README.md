@@ -1,4 +1,4 @@
-m ../<div align="center">
+<div align="center">
   <img src="https://github.com/ceandrade/brkga_mp_ipr_python/blob/master/docs/src/assets/logo_name_300.png">
 </div>
 

@@ -24,9 +24,9 @@ all:
 	sphinx-apidoc-3.7 -f -e --extensions autodoc,todo,mathjax,viewcode \
 		-o src/rst ../brkga_mp_ipr
 	sphinx-build-3.7 -b html src/rst build/html
-	touch  build/html/.nojekyll
+	touch build/html/.nojekyll
 	rm -rf ../docs
-	cp -a  build/html ../docs
+	cp -a build/html ../docs
 	cp -a src/assets/logo*png ../docs/_static
 
 clean:
