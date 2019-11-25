@@ -36,7 +36,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="brkga_mp_ipr",
-    version="0.9",
+    version="0.9.1",
     author="Carlos Eduardo de Andrade",
     author_email="ce.andrade@gmail.com",
     description="The Multi-Parent Biased Random-Key Genetic Algorithm "
