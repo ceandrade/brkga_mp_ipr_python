@@ -19,7 +19,6 @@ BRKGA-MP-IPR - Python version
   <td>
     <a href="https://coveralls.io/github/ceandrade/brkga_mp_ipr_python?branch=master">
     <img src='https://coveralls.io/repos/github/ceandrade/brkga_mp_ipr_python/badge.svg?branch=master' alt='Coverage Status' /></a>
-    
   </td>
 </tr>
 <tr>
