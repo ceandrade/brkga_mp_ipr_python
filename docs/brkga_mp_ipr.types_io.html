@@ -163,39 +163,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-brkga_mp_ipr.types_io">
-<span id="brkga-mp-ipr-types-io-module"></span><h1>brkga_mp_ipr.types_io module<a class="headerlink" href="#module-brkga_mp_ipr.types_io" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
-<dt id="brkga_mp_ipr.types_io.load_configuration">
-<code class="sig-prename descclassname">brkga_mp_ipr.types_io.</code><code class="sig-name descname">load_configuration</code><span class="sig-paren">(</span><em class="sig-param">configuration_file: str) -&gt; (&lt;class 'brkga_mp_ipr.types.BrkgaParams'&gt;</em>, <em class="sig-param">&lt;class 'brkga_mp_ipr.types.ExternalControlParams'&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/brkga_mp_ipr/types_io.html#load_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#brkga_mp_ipr.types_io.load_configuration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads the parameters from <cite>configuration_file</cite> returning them as a tuple.</p>
-<dl>
-<dt>Args:</dt><dd><p>configuration_file (str): plain text file containing the configuration.</p>
-</dd>
-<dt>Returns:</dt><dd><p>A tuple containing a <cite>BrkgaParams</cite> and a <cite>ExternalControlParams</cite> object.</p>
-</dd>
-<dt>Raises:</dt><dd><p>IsADirectoryError: If <cite>configuration_file</cite> is a folder.</p>
-<p>FileNotFoundError: If <cite>configuration_file</cite> does not exist.</p>
-<p>LoadError: In cases of missing data or bad-formatted data.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
-<dt id="brkga_mp_ipr.types_io.write_configuration">
-<code class="sig-prename descclassname">brkga_mp_ipr.types_io.</code><code class="sig-name descname">write_configuration</code><span class="sig-paren">(</span><em class="sig-param">filename: str</em>, <em class="sig-param">brkga_params: brkga_mp_ipr.types.BrkgaParams</em>, <em class="sig-param">external_params: brkga_mp_ipr.types.ExternalControlParams</em><span class="sig-paren">)</span> &#x2192; None<a class="reference internal" href="_modules/brkga_mp_ipr/types_io.html#write_configuration"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#brkga_mp_ipr.types_io.write_configuration" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes <cite>brkga_params</cite> and <cite>external_params</cite> into <cite>filename</cite>.</p>
-<dl>
-<dt>Args:</dt><dd><p>filename (str): A file where the configuration will be written.</p>
-<p>brkga_params (BrkgaParams): The BRKGA-MP-IPR parameters.</p>
-<p>external_params (ExternalControlParams): The control parameters.</p>
-</dd>
-<dt>Raises:</dt><dd><p>IsADirectoryError: If <cite>filename</cite> is a folder.</p>
-<p>PermissionError: If we cannot write into the file.</p>
-</dd>
-</dl>
-</dd></dl>
-
+  <div class="section" id="brkga-mp-ipr-types-io-module">
+<h1>brkga_mp_ipr.types_io module<a class="headerlink" href="#brkga-mp-ipr-types-io-module" title="Permalink to this headline">¶</a></h1>
 </div>
 
 

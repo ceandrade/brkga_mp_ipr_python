@@ -279,9 +279,9 @@ This is a trimmed copy:</p>
 <span class="kn">from</span> <span class="nn">tsp_instance</span> <span class="kn">import</span> <span class="n">TSPInstance</span>
 <span class="kn">from</span> <span class="nn">tsp_decoder</span> <span class="kn">import</span> <span class="n">TSPDecoder</span>
 
-<span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="bp">None</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">main</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Usage: python main_minimal.py &lt;seed&gt; &lt;config-file&gt; &quot;</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Usage: python main_minimal.py &lt;seed&gt; &lt;config-file&gt; &quot;</span>
             <span class="s2">&quot;&lt;num-generations&gt; &lt;tsp-instance-file&gt;&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
@@ -309,7 +309,7 @@ This is a trimmed copy:</p>
     <span class="n">brkga</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">num_generations</span><span class="p">)</span>
 
     <span class="n">best_cost</span> <span class="o">=</span> <span class="n">brkga</span><span class="o">.</span><span class="n">get_best_fitness</span><span class="p">()</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Best cost: {best_cost}&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Best cost: </span><span class="si">{best_cost}</span><span class="s2">&quot;</span><span class="p">)</span>
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span>
@@ -612,7 +612,7 @@ other auxiliary procedures.</p>
 signature:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decoder</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">sense</span><span class="p">:</span> <span class="n">Sense</span><span class="p">,</span> <span class="n">seed</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
              <span class="n">chromosome_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">params</span><span class="p">:</span> <span class="n">BrkgaParams</span><span class="p">,</span>
-             <span class="n">evolutionary_mechanism_on</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+             <span class="n">evolutionary_mechanism_on</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
              <span class="n">chrmosome_type</span><span class="p">:</span> <span class="nb">type</span> <span class="o">=</span> <span class="n">BaseChromosome</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -769,7 +769,7 @@ Finally, we call `` BrkgaMpIpr.set_initial_population()`` to assign the
 incumbent to the initial population. Note that we enclose the initial
 solution inside a vector of chromosomes, since <code class="docutils literal notranslate"><span class="pre">set_initial_population()</span></code>
 may take more than one starting solution. See its signature:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_initial_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromosomes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseChromosome</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="bp">None</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">set_initial_population</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromosomes</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BaseChromosome</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </pre></div>
 </div>
 <p>Indeed, you can have as much warm-start solutions as you like, limited to the
@@ -844,7 +844,7 @@ evolutionary cycles. You can do that using
 <code class="docutils literal notranslate"><span class="pre">BrkgaMpIpr.inject_chromosome()</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">inject_chromosome</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chromosome</span><span class="p">:</span> <span class="n">BaseChromosome</span><span class="p">,</span>
                       <span class="n">population_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
-                      <span class="n">fitness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="bp">None</span>
+                      <span class="n">fitness</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </pre></div>
 </div>
 <p>Note that the chromosome is put in a specific position of a given population.
@@ -1030,7 +1030,7 @@ the principle of locality.</p>
 <span class="c1">#              (x, y) -&gt; 1.0, (x, y) -&gt; true, 0, 0.5, 1, 10.0, 1.0)</span>
 <span class="n">bogus_alg</span><span class="o">.</span><span class="n">get_best_fitness</span><span class="p">()</span>
 <span class="n">bogus_alg</span><span class="o">.</span><span class="n">get_best_chromosome</span><span class="p">()</span>
-<span class="n">bogus_alg</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="n">bogus_alg</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
 </div>
