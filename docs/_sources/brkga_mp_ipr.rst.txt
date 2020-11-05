@@ -5,6 +5,7 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    brkga_mp_ipr.algorithm
    brkga_mp_ipr.enums

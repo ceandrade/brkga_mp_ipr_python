@@ -23,12 +23,12 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script type="text/javascript" src="../../_static/add_target.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script src="../../_static/add_target.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -276,42 +276,42 @@
 
         <span class="k">if</span> <span class="n">chromosome_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Chromosome size must be larger than &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;zero: </span><span class="si">{chromosome_size}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;zero: </span><span class="si">{</span><span class="n">chromosome_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Population size size must be larger than &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;zero: </span><span class="si">{params.population_size}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;zero: </span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elite set size less then one: &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.elite_size}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elite set size (</span><span class="si">{self.elite_size}</span><span class="s2">) greater than &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;population size (</span><span class="si">{params.population_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elite set size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="si">}</span><span class="s2">) greater than &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;population size (</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mutant set size less then zero: &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{self.num_mutants}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mutant set size (</span><span class="si">{self.num_mutants}</span><span class="s2">) greater &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;than population size (</span><span class="si">{params.population_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mutant set size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span><span class="si">}</span><span class="s2">) greater &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;than population size (</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elite set size (</span><span class="si">{self.elite_size}</span><span class="s2">) + &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;mutant set size (</span><span class="si">{self.num_mutants}</span><span class="s2">) greater &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;than population size (</span><span class="si">{params.population_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Elite set size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="si">}</span><span class="s2">) + &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;mutant set size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">num_mutants</span><span class="si">}</span><span class="s2">) greater &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;than population size (</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of elite parents must be at least 1: &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{params.num_elite_parents}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">total_parents</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total parents must be at least 2: &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{params.total_parents}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">total_parents</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span> <span class="o">&gt;=</span> <span class="n">params</span><span class="o">.</span><span class="n">total_parents</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of elite parents (</span><span class="si">{params.num_elite_parents}</span><span class="s2">) &quot;</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of elite parents (</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span><span class="si">}</span><span class="s2">) &quot;</span>
                              <span class="sa">f</span><span class="s2">&quot;is greater than or equal to total_parents &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{params.total_parents}</span><span class="s2">)&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">total_parents</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of elite parents (</span><span class="si">{params.num_elite_parents}</span><span class="s2">) &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;is greater than elite set (</span><span class="si">{self.elite_size}</span><span class="s2">)&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of elite parents (</span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">num_elite_parents</span><span class="si">}</span><span class="s2">) &quot;</span>
+                             <span class="sa">f</span><span class="s2">&quot;is greater than elite set (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">elite_size</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of parallel populations must be larger &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;than zero: </span><span class="si">{params.num_independent_populations}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;than zero: </span><span class="si">{</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="c1"># TODO (ceandrade): enable the following when IPR methods be implemented.</span>
         <span class="c1"># elif params.alpha_block_size &lt;= 0.0:</span>
         <span class="c1">#     raise ValueError(f&quot;Alpha block size must be larger than zero: &quot;</span>
@@ -321,7 +321,7 @@
         <span class="c1">#                      f&quot;{params.pr_percentage}&quot;)</span>
 
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">decoder</span><span class="p">,</span> <span class="s2">&quot;decode&quot;</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The given decoder ({type(decoder)}) &quot;</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The given decoder (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">decoder</span><span class="p">)</span><span class="si">}</span><span class="s2">) &quot;</span>
                             <span class="sa">f</span><span class="s2">&quot;has no &#39;decode()&#39; method&quot;</span><span class="p">)</span>
 
         <span class="c1">###################</span>
@@ -427,8 +427,8 @@
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chromosomes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Number of given chromosomes ({len(chromosomes)}) is large &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;than the population size (</span><span class="si">{self.params.population_size}</span><span class="s2">)&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;Number of given chromosomes (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">chromosomes</span><span class="p">)</span><span class="si">}</span><span class="s2">) is large &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;than the population size (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="si">}</span><span class="s2">)&quot;</span>
             <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span> <span class="o">=</span> <span class="p">[</span>
@@ -438,9 +438,9 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">chromosome</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">chromosomes</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">chromosome</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromosome_size</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Error on setting initial population: chromosome </span><span class="si">{i}</span><span class="s2"> &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Error on setting initial population: chromosome </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> &quot;</span>
                     <span class="sa">f</span><span class="s2">&quot;does not have the required dimension (actual size: &quot;</span>
-                    <span class="sa">f</span><span class="s2">&quot;{len(chromosome)}, required size: </span><span class="si">{self.chromosome_size}</span><span class="s2">)&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">chromosome</span><span class="p">)</span><span class="si">}</span><span class="s2">, required size: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chromosome_size</span><span class="si">}</span><span class="s2">)&quot;</span>
                 <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">chromosomes</span>\
                 <span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BaseChromosome</span><span class="p">(</span><span class="n">chromosome</span><span class="p">))</span>
@@ -717,14 +717,14 @@
            <span class="n">population_index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Population must be in &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;[0, {self.params.num_independent_populations - 1}]: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{population_index}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;[0, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span> <span class="o">-</span> <span class="mi">1</span><span class="si">}</span><span class="s2">]: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">population_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">position</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">position</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Chromosome position must be in &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;[0, {self.params.population_size - 1}]: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{position}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;[0, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">population_size</span> <span class="o">-</span> <span class="mi">1</span><span class="si">}</span><span class="s2">]: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">position</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">pop</span><span class="o">.</span><span class="n">chromosomes</span><span class="p">[</span><span class="n">pop</span><span class="o">.</span><span class="n">fitness</span><span class="p">[</span><span class="n">position</span><span class="p">][</span><span class="mi">1</span><span class="p">]])</span></div>
@@ -758,8 +758,8 @@
            <span class="n">population_index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Population must be in &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;[0, {self.params.num_independent_populations - 1}]: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{population_index}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;[0, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span> <span class="o">-</span> <span class="mi">1</span><span class="si">}</span><span class="s2">]: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">population_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span></div>
 
@@ -788,7 +788,7 @@
                                 <span class="s2">&quot;&#39;evolve()&#39;&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">num_generations</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Number of generations must be large than one. &quot;</span>
-                             <span class="sa">f</span><span class="s2">&quot;Given </span><span class="si">{num_generations}</span><span class="s2">&quot;</span><span class="p">)</span>
+                             <span class="sa">f</span><span class="s2">&quot;Given </span><span class="si">{</span><span class="n">num_generations</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_generations</span><span class="p">):</span>
             <span class="k">for</span> <span class="n">pop_idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">):</span>
@@ -826,8 +826,8 @@
            <span class="n">population_index</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;Population must be in &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;[0, {self.params.num_independent_populations - 1}]: &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{population_index}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="sa">f</span><span class="s2">&quot;[0, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">num_independent_populations</span> <span class="o">-</span> <span class="mi">1</span><span class="si">}</span><span class="s2">]: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">population_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># Make names shorter.</span>
         <span class="n">curr_pop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_current_populations</span><span class="p">[</span><span class="n">population_index</span><span class="p">]</span>
