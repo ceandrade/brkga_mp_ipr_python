@@ -1,12 +1,12 @@
 ###############################################################################
 # algorithm.py: Definition of BRKGA-MP-API methods and algorithms.
 #
-# (c) Copyright 2019, Carlos Eduardo de Andrade. All Rights Reserved.
+# (c) Copyright 2021, Carlos Eduardo de Andrade. All Rights Reserved.
 #
 # This code is released under LICENSE.md.
 #
 # Created on:  Nov 08, 2019 by ceandrade
-# Last update: Nov 15, 2019 by ceandrade
+# Last update: Oct 08, 2021 by ceandrade
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -680,7 +680,7 @@ class BrkgaMpIpr:
         # First, we copy the elite chromosomes to the next generation.
         for i in range(self.elite_size):
             next_pop.chromosomes[i][:] = curr_pop.chromosomes[i][:]
-            next_pop.fitness[i] = curr_pop.fitness[i]
+            next_pop.fitness[i] = (curr_pop.fitness[i][0], i)
 
         # Then, we mate/crossover 'pop_size - elite_size - num_mutants' pairs.
         for chr_idx in range(self.elite_size, replace_idx):
