@@ -1,12 +1,12 @@
 ###############################################################################
 # algorithm.py: Definition of BRKGA-MP-API methods and algorithms.
 #
-# (c) Copyright 2021, Carlos Eduardo de Andrade. All Rights Reserved.
+# (c) Copyright 2022, Carlos Eduardo de Andrade. All Rights Reserved.
 #
 # This code is released under LICENSE.md.
 #
 # Created on:  Nov 08, 2019 by ceandrade
-# Last update: Oct 08, 2021 by ceandrade
+# Last update: May 18, 2022 by ceandrade
 #
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
 # AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
@@ -115,20 +115,20 @@ class BrkgaMpIpr:
         # Error checking
         ###################
 
-        if chromosome_size < 1:
+        if chromosome_size < 2:
             raise ValueError(f"Chromosome size must be larger than "
-                             f"zero: {chromosome_size}")
+                             f"one, current {chromosome_size}")
         elif params.population_size < 1:
             raise ValueError(f"Population size size must be larger than "
-                             f"zero: {params.population_size}")
+                             f"zero, current {params.population_size}")
         elif self.elite_size < 1:
-            raise ValueError(f"Elite set size less then one: "
+            raise ValueError(f"Elite set size less then one, current "
                              f"{self.elite_size}")
         elif self.elite_size > params.population_size:
             raise ValueError(f"Elite set size ({self.elite_size}) greater than "
                              f"population size ({params.population_size})")
         elif self.num_mutants < 0:
-            raise ValueError(f"Mutant set size less then zero: "
+            raise ValueError(f"Mutant set size less then zero, current "
                              f"{self.num_mutants}")
         elif self.num_mutants > params.population_size:
             raise ValueError(f"Mutant set size ({self.num_mutants}) greater "
@@ -138,10 +138,10 @@ class BrkgaMpIpr:
                              f"mutant set size ({self.num_mutants}) greater "
                              f"than population size ({params.population_size})")
         elif params.num_elite_parents < 1:
-            raise ValueError(f"Number of elite parents must be at least 1: "
-                             f"{params.num_elite_parents}")
+            raise ValueError(f"Number of elite parents must be at least 1, "
+                             f"current {params.num_elite_parents}")
         elif params.total_parents < 2:
-            raise ValueError(f"Total parents must be at least 2: "
+            raise ValueError(f"Total parents must be at least 2, current "
                              f"{params.total_parents}")
         elif params.num_elite_parents >= params.total_parents:
             raise ValueError(f"Number of elite parents ({params.num_elite_parents}) "
@@ -152,7 +152,7 @@ class BrkgaMpIpr:
                              f"is greater than elite set ({self.elite_size})")
         elif params.num_independent_populations < 1:
             raise ValueError(f"Number of parallel populations must be larger "
-                             f"than zero: {params.num_independent_populations}")
+                             f"than zero, current {params.num_independent_populations}")
         # TODO (ceandrade): enable the following when IPR methods be implemented.
         # elif params.alpha_block_size <= 0.0:
         #     raise ValueError(f"Alpha block size must be larger than zero: "
