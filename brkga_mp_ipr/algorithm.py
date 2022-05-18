@@ -679,7 +679,7 @@ class BrkgaMpIpr:
 
         # First, we copy the elite chromosomes to the next generation.
         for i in range(self.elite_size):
-            next_pop.chromosomes[i][:] = curr_pop.chromosomes[i][:]
+            next_pop.chromosomes[i][:] = curr_pop.chromosomes[curr_pop.fitness[i][1]][:]
             next_pop.fitness[i] = (curr_pop.fitness[i][0], i)
 
         # Then, we mate/crossover 'pop_size - elite_size - num_mutants' pairs.
