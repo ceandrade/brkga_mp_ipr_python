@@ -40,7 +40,7 @@ setuptools.setup(
     author="Carlos Eduardo de Andrade",
     author_email="ce.andrade@gmail.com",
     description="The Multi-Parent Biased Random-Key Genetic Algorithm "
-                "with Implict Path Relink",
+                "with Implicit Path Relink",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/ceandrade/brkga_mp_ipr_python",
